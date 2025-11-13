@@ -161,6 +161,8 @@ class Order
     public function setCreatedAtValue(): void
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTime();
+
     }
 
     #[ORM\PreUpdate]

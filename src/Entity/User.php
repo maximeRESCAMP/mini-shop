@@ -94,13 +94,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, CartItem>
      */
-    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'user_id', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $cartItems;
 
     /**
      * @var Collection<int, Order>
      */
-    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user_id')]
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
     private Collection $orders;
 
     public function __construct()
@@ -325,6 +325,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAtValue(): void
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTime();
+
     }
 
     #[ORM\PreUpdate]
