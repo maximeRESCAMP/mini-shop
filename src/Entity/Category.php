@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'Ce slug est déjà utilisé pour une autre catégorie.')]
 #[UniqueEntity(fields: ['name'], message: 'Une catégorie avec ce nom existe déjà.')]
+#[ORM\HasLifecycleCallbacks]
 
 class Category
 {

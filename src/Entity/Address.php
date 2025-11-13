@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(
     fields: ['zipCode', 'city', 'street', 'country'],
     message: 'Adresse déja existante'

@@ -4,9 +4,10 @@ namespace App\DataFixtures;
 
 use App\Entity\Address;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker;
-class AddressFixtures extends Fixture
+class AddressFixtures extends Fixture implements FixtureGroupInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -20,5 +21,10 @@ class AddressFixtures extends Fixture
             $manager->persist($address);
         }
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['test1'];
     }
 }

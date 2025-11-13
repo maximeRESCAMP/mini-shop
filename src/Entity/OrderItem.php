@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderItemRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+
 class OrderItem
 {
     #[ORM\Id]

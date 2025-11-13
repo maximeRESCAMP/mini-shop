@@ -5,12 +5,14 @@ namespace App\DataFixtures;
 use App\Entity\Address;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Faker;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture  implements FixtureGroupInterface, DependentFixtureInterface
 {
 
     public function __construct(private UserPasswordHasherInterface $passwordHasher)
@@ -62,5 +64,11 @@ class UserFixtures extends Fixture
         return [
             AddressFixtures::class,
         ];
+    }
+
+
+    public static function getGroups(): array
+    {
+       return ['test1'];
     }
 }

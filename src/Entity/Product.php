@@ -11,6 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+
 #[UniqueEntity(
     fields: ['slug'],
     message: 'slug déja existant'

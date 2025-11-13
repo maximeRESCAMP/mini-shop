@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
     fields: ['user', 'product'],
     message: 'Ce produit est déjà dans votre panier'
 )]
+#[ORM\HasLifecycleCallbacks]
+
 class CartItem
 {
     #[ORM\Id]
@@ -47,7 +49,7 @@ class CartItem
 
     public function setUser(?User $user): static
     {
-        $this->$user = $user;
+        $this->user = $user;
 
         return $this;
     }
