@@ -6,8 +6,14 @@ use App\Repository\AddressRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
+#[UniqueEntity(
+    fields: ['zipCode', 'city', 'street', 'country'],
+    message: 'Adresse déja existante'
+)]
 class Address
 {
     #[ORM\Id]
@@ -16,15 +22,44 @@ class Address
     private ?int $id = null;
 
     #[ORM\Column(length: 5)]
+    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\Regex(
+        pattern: '/\d{5}/',
+        message: 'Le champ  ne doit contenir que des chiffres'
+    )]
     private ?string $zipCode = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'La ville doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La ville ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
+        message: 'Le champ  ne doit contenir que des lettre ou espace - ou bien \''
+    )]
     private ?string $city = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Ce champ  ne peut pa être vide')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'La rue doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La rue ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ0-9\' -]{3,50}$/',
+        message: 'Le champ  ne doit contenir que des lettre chiffre ou espace - ou bien \''
+    )]
     private ?string $street = null;
 
     #[ORM\Column(length: 2)]
+    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\Country (message: 'Le champ doit etre en 2 lettres pays')]
     private ?string $country = null;
 
     /**

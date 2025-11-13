@@ -8,17 +8,22 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    #[UniqueEntity(
+        fields: ['email'],
+        message: 'email déja existante'
+    )]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
     /**
@@ -31,15 +36,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\PasswordStrength(
+        message: 'Votre mots de passe est trop facile.'
+    )]
+    #[Assert\NotCompromisedPassword]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'La prénom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La prénom ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
+        message: 'Le champ  ne doit contenir que des lettre ou espace - ou bien \''
+    )]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'La nom de famille doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La nom de famille ne peut pas dépasser {{ limit }} caractères'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
+        message: 'Le champ  ne doit contenir que des lettre ou espace - ou bien \''
+    )]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 15)]
+    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\Regex(
+        pattern: '/^(?:\+33|0)[1-9](\d{2}){4}$/',
+        message: 'Le champ  ne doit contenir que des chiffres'
+    )]
     private ?string $phone = null;
 
     /**
@@ -48,9 +85,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Address::class, inversedBy: 'users')]
     private Collection $deliveryAddress;
 
+    /**
+     * @var Collection<int, CartItem>
+     */
+    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'user_id', orphanRemoval: true)]
+    private Collection $cartItems;
+
+    /**
+     * @var Collection<int, Order>
+     */
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user_id')]
+    private Collection $orders;
+
     public function __construct()
     {
         $this->deliveryAddress = new ArrayCollection();
+        $this->cartItems = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -190,6 +241,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeDeliveryAddress(Address $deliveryAddress): static
     {
         $this->deliveryAddress->removeElement($deliveryAddress);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CartItem>
+     */
+    public function getCartItems(): Collection
+    {
+        return $this->cartItems;
+    }
+
+    public function addCartItem(CartItem $cartItem): static
+    {
+        if (!$this->cartItems->contains($cartItem)) {
+            $this->cartItems->add($cartItem);
+            $cartItem->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartItem(CartItem $cartItem): static
+    {
+        if ($this->cartItems->removeElement($cartItem)) {
+            // set the owning side to null (unless already changed)
+            if ($cartItem->getUser() === $this) {
+                $cartItem->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): static
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): static
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getUser() === $this) {
+                $order->setUser(null);
+            }
+        }
 
         return $this;
     }
