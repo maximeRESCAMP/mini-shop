@@ -7,12 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+
 
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-
 #[UniqueEntity(
     fields: ['slug'],
     message: 'slug déja existant'
@@ -23,6 +24,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class Product
 {
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $updatedAt = null;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -67,7 +72,7 @@ class Product
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Assert\Positive(message:'Le prix doit être supérieur à 0')]
+    #[Assert\Positive(message: 'Le prix doit être supérieur à 0')]
     #[Assert\NotNull(message: 'Le prix est obligatoire')]
     #[Assert\Type(type: 'float', message: 'Le prix doit être un nombre décimal')]
     private ?float $price = null;
@@ -75,7 +80,6 @@ class Product
     #[ORM\Column]
     #[Assert\NotNull(message: 'Le stock est obligatoire')]
     #[Assert\PositiveOrZero(message: 'Le stock ne peut pas être négatif')]
-
     private ?int $stock = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -175,9 +179,6 @@ class Product
     }
 
 
-
-
-
     /**
      * @return Collection<int, CartItem>
      */
@@ -218,5 +219,28 @@ class Product
         $this->category = $category;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTime();
     }
 }
