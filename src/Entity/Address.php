@@ -72,7 +72,7 @@ class Address
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'deliveryAddress')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'deliveryAddresses')]
     private Collection $users;
 
     public function __construct()
@@ -145,7 +145,7 @@ class Address
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->addDeliveryAddress($this);
+            $user->addDeliveryAddresses($this);
         }
 
         return $this;
@@ -154,7 +154,7 @@ class Address
     public function removeUser(User $user): static
     {
         if ($this->users->removeElement($user)) {
-            $user->removeDeliveryAddress($this);
+            $user->removeDeliveryAddresses($this);
         }
 
         return $this;

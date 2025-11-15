@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -43,10 +44,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
-    #[Assert\PasswordStrength(
-        message: 'Votre mots de passe est trop facile.'
-    )]
-    #[Assert\NotCompromisedPassword]
+    #[Assert\NotCompromisedPassword(message: 'Mot de passe compromis ')]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
@@ -59,7 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
-        message: 'Le champ  ne doit contenir que des lettre ou espace - ou bien \''
+        message: 'Le champ  ne doit contenir que des lettres, espaces, tirets, apostrophe'
     )]
     private ?string $firstName = null;
 
@@ -73,7 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
-        message: 'Le champ  ne doit contenir que des lettre ou espace - ou bien \''
+        message: 'Le champ  ne doit contenir que des lettres, espaces, tirets, apostrophe'
     )]
     private ?string $lastName = null;
 
@@ -86,10 +84,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $phone = null;
 
     /**
-     * @var Collection<int, Address>
+     * @var Collection<Address>
+     * @Assert\Valid
      */
     #[ORM\ManyToMany(targetEntity: Address::class, inversedBy: 'users')]
-    private Collection $deliveryAddress;
+    #[Assert\Valid]
+    private Collection $deliveryAddresses;
 
     /**
      * @var Collection<int, CartItem>
@@ -105,7 +105,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->deliveryAddress = new ArrayCollection();
+        $this->deliveryAddresses = new ArrayCollection();
         $this->cartItems = new ArrayCollection();
         $this->orders = new ArrayCollection();
     }
@@ -228,25 +228,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Address>
+     * @return Collection<Address>
      */
-    public function getDeliveryAddress(): Collection
+    public function getDeliveryAddresses(): Collection
     {
-        return $this->deliveryAddress;
+        return $this->deliveryAddresses;
     }
 
-    public function addDeliveryAddress(Address $deliveryAddress): static
+    public function addDeliveryAddress(Address $deliveryAddresses): static
     {
-        if (!$this->deliveryAddress->contains($deliveryAddress)) {
-            $this->deliveryAddress->add($deliveryAddress);
+        if (!$this->deliveryAddresses->contains($deliveryAddresses)) {
+            $this->deliveryAddresses->add($deliveryAddresses);
         }
 
         return $this;
     }
 
-    public function removeDeliveryAddress(Address $deliveryAddress): static
+    public function removeDeliveryAddress(Address $deliveryAddresses): static
     {
-        $this->deliveryAddress->removeElement($deliveryAddress);
+        $this->deliveryAddresses->removeElement($deliveryAddresses);
 
         return $this;
     }

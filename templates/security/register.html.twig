@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div>
+            <div class="col-lg-10 col-md-12 mx-auto">
+                <div class="p-4 bg-white shadow rounded">
+
+                    <h1 class="text-center mb-4">Créer mon compte</h1>
+
+                    {{ form_start(form) }}
+
+                    <div class="my-custom-class-for-errors mb-3">
+                        {{ form_errors(form) }}
+                    </div>
+
+                    <fieldset class="border rounded p-4 mb-4">
+                        <legend class="w-auto px-2 fw-bold">Informations personnelles</legend>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form_row(form.email) }}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form_row(form.password) }}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form_row(form.firstName) }}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form_row(form.lastName) }}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form_row(form.phone) }}
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="border rounded p-4 mb-4">
+                        <legend class="w-auto px-2 fw-bold">Adresse de livraison</legend>
+
+                        {% for deliveryAddresses in form.deliveryAddresses %}
+                            {{ form_row(deliveryAddresses) }}
+                        {% endfor %}
+
+                    </fieldset>
+
+                    <div>
+                        {{ form_row(form.save) }}
+                    </div>
+                    {{ form_end(form) }}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
