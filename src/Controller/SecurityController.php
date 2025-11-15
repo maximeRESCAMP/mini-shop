@@ -53,12 +53,13 @@ class SecurityController extends AbstractController
                 'city' => $newAdresseLivraison->getCity(),
                 'country' => $newAdresseLivraison->getCountry()
             ]);
-
             if ($oldAdresseLivraison) {
                 $user->removeDeliveryAddress($newAdresseLivraison);
                 $user->addDeliveryAddress($oldAdresseLivraison);
+            }else{
+                $em->persist($newAdresseLivraison);
             }
-            
+
             $em->persist($user);
             $em->flush();
             return $this->redirectToRoute('app_login');

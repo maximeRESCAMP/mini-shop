@@ -7,15 +7,11 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Intl\Countries;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(
-    fields: ['zipCode', 'city', 'street', 'country'],
-    message: 'Adresse déja existante'
-)]
 class Address
 {
     #[ORM\Id]
@@ -64,9 +60,8 @@ class Address
     )]
     private ?string $street = null;
 
-    #[ORM\Column(length: 2)]
+    #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
-    #[Assert\Country (message: 'Le champ doit etre en 2 lettres pays')]
     private ?string $country = null;
 
     /**
@@ -145,7 +140,7 @@ class Address
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->addDeliveryAddresses($this);
+            $user->addDeliveryAddress($this);
         }
 
         return $this;
@@ -154,7 +149,7 @@ class Address
     public function removeUser(User $user): static
     {
         if ($this->users->removeElement($user)) {
-            $user->removeDeliveryAddresses($this);
+            $user->removeDeliveryAddress($this);
         }
 
         return $this;

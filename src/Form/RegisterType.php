@@ -20,11 +20,11 @@ class RegisterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class, ['label' => 'Email', 'attr' => ['placeholder' => 'prenom.nom@hotmail.fr']])
-            ->add('password', PasswordType::class, ['label' => 'Mot de passe','attr' => ['placeholder' => 'U4u0FvpnFPc!93TiG']])
-            ->add('firstName', TextType::class,['label'=>'Prénom', 'attr'=> ['placeholder' => 'Jean']])
-            ->add('lastName', TextType::class,['label'=>'Nom', 'attr'=> ['placeholder' => 'DUBOIS']])
-            ->add('phone', TelType::class,['label'=> 'Télephone','attr'=> ['placeholder' => '0620458545']])
+            ->add('email', EmailType::class, ['label' => 'Email', 'attr' => ['placeholder' => 'prenom.nom@hotmail.fr','value' => 'prenom.nom@hotmail.fr']])
+            ->add('password', PasswordType::class, ['label' => 'Mot de passe','attr' => ['placeholder' => 'U4u0FvpnFPc!93TiG','value' => 'U4u0FvpnFPc!93TiG']])
+            ->add('firstName', TextType::class,['label'=>'Prénom', 'attr'=> ['placeholder' => 'Jean','value' => 'Jean']])
+            ->add('lastName', TextType::class,['label'=>'Nom', 'attr'=> ['placeholder' => 'DUBOIS','value' => 'DUB']])
+            ->add('phone', TelType::class,['label'=> 'Télephone','attr'=> ['placeholder' => '0620458545','value' => '0620458545']])
             ->add('deliveryAddresses', CollectionType::class, [
                 'entry_type' => AddressType::class,
                 'by_reference' => false,

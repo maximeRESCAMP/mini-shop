@@ -7,6 +7,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,6 +15,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['email'], message: 'Une compte existe déja avec cette mails.')]
+
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -21,16 +24,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $createdAt = null;
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $updatedAt = null;
-    #[UniqueEntity(
-        fields: ['email'],
-        message: 'email déja existante'
-    )]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email(
+        message: 'L\'email {{ value }} n\'est pas valide',
+    )]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire')]
     private ?string $email = null;
 
     /**
@@ -80,6 +83,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Regex(
         pattern: '/^(?:\+33|0)[1-9](\d{2}){4}$/',
         message: 'Le champ  ne doit contenir que des chiffres'
+    )]
+    #[Assert\Length(
+        max: 15,
+        maxMessage: 'Le numéro ne peut pas dépasser {{ limit }} caractères'
     )]
     private ?string $phone = null;
 
