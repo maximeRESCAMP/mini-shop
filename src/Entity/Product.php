@@ -19,8 +19,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'slug déja existant'
 )]
 #[UniqueEntity(
-    fields: ['$name'],
-    message: '$name déja existant'
+    fields: ['name'],
+    message: 'name déja existant'
 )]
 class Product
 {
@@ -40,10 +40,6 @@ class Product
         max: 50,
         minMessage: 'La rue doit contenir au moins {{ limit }} caractères',
         maxMessage: 'La rue ne peut pas dépasser {{ limit }} caractères'
-    )]
-    #[Assert\Regex(
-        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
-        message: 'Le nom ne doit contenir que des lettres, espaces, apostrophes ou tirets (3 à 50 caractères).'
     )]
     private ?string $name = null;
 

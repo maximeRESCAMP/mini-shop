@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste de vos adresses de Livraison{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+
+        <div class="bg-white shadow rounded p-4">
+            <h1 class="text-center mb-4">Liste des adresses de Livraison</h1>
+            <div class="d-flex justify-content-end">
+                <a  href="{{  path('app_address_add') }}" class="btn btn-success mb-3">
+                    Ajouter une adresse de livraison
+                </a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Pays</th>
+                        <th>Code Postal </th>
+                        <th>Ville</th>
+                        <th>Rue</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for deliveryAddres in user.deliveryAddresses %}
+                        <tr>
+                            <td>{{ deliveryAddres.country }}</td>
+                            <td>{{ deliveryAddres.zipCode }}</td>
+                            <td>{{ deliveryAddres.city }}</td>
+                            <td>{{ deliveryAddres.street }}</td>
+                            <td>
+                                <a href="{{path('app_address_remove', parameters = {id:deliveryAddres.id})}}" class="btn btn-danger mb-3"> Supprimer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

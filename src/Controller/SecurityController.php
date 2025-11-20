@@ -65,15 +65,6 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-
-
-
-
-
-
-
-
-
         return $this->render('security/register.html.twig', [
             'form' => $form,
         ]);

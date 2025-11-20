@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une adresse de livraison{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div>
+            <div class="col-lg-10 col-md-12 mx-auto">
+                <div class="p-4 bg-white shadow rounded">
+
+                    <h1 class="text-center mb-4">Créer une adresse de livraison</h1>
+
+                    {{ form_start(form) }}
+
+                    <div class="my-custom-class-for-errors mb-3">
+                        {{ form_errors(form) }}
+                    </div>
+
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            {{ form_row(form.country) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.zipCode) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.city) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.street) }}
+                        </div>
+                        <div>
+                            <button class="btn btn-primary w-100"> Ajouter</button>
+                        </div>
+                    </div>
+
+
+                    {{ form_end(form) }}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
