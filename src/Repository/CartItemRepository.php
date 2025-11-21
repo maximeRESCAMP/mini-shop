@@ -16,20 +16,20 @@ class CartItemRepository extends ServiceEntityRepository
         parent::__construct($registry, CartItem::class);
     }
 
-    //    /**
-    //     * @return CartItem[] Returns an array of CartItem objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+         * @return CartItem[] Returns an array of CartItem objects
+         */
+        public function findIdByUser($user): array
+        {
+            return $this->createQueryBuilder('ci')
+                ->select('IDENTITY(ci.product)')
+                ->andWhere('ci.user = :user')
+                ->setParameter('user', $user)
+                ->orderBy('ci.id', 'ASC')
+                ->getQuery()
+                ->getSingleColumnResult()
+            ;
+        }
 
     //    public function findOneBySomeField($value): ?CartItem
     //    {

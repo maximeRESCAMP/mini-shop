@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des produits{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="bg-white shadow rounded p-4">
+            <h1 class="text-center mb-4">Liste des produits</h1>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Image</th>
+                        <th>Catégorie</th>
+                        <th>Produit</th>
+                        <th>Prix</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>
+                                {{ product.image }}">
+                            </td>
+                            <td>{{ product.category.name }}</td>
+                            <td>
+                                <a href="{{ path('app_product_detail', {id: product.id}) }}"
+                                   class="text-decoration-none fw-bold">
+                                    {{ product.name }}
+                                </a>
+                            </td>
+                            <td>{{ product.price | round(2, 'common') }}€</td>
+                            <td>
+                                {% if product.stock < 1 %}
+                                    <button class="btn btn-secondary" disabled>Plus de stock</button>
+                                {% endif %}
+                                {% if (product.id in tabItemCartOrder) %}
+                                    <a href="{{ path('app_cart_item_remove',{id: product.id}) }}"
+                                       class="btn btn-danger mb-3">Supprimer du pannier</a>
+                                {% else %}
+                                    {% if product.stock > 0 %}
+                                        <a href="{{ path('app_cart_item_add',{id: product.id}) }}"
+                                           class="btn btn-primary mb-3">Ajouter au pannier</a>
+                                    {% endif %}
+
+                                {% endif %}
+
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
