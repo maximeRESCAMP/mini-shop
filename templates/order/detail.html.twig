@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Commandes{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+
+        <div class="bg-white shadow rounded p-4">
+            <h1 class="text-center mb-4">Liste des commandes</h1>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle text-center">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Réfférences</th>
+                        <th>Adresse de livraison</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for order in tabOrders %}
+                        <tr>
+                            <td>{{ order.createdAt|date("d/m/Y") }}</td>
+                            <td><a href="{{path('app_order_items_detail_order', parameters = {id:order.id})}}">{{ order.reference }}</a></td>
+                            <td>{{ order.address.country ~' '~ order.address.zipCode ~' '~ order.address.city ~' '~order.address.street ~' ' }}</td>
+                            <td>{{ order.total | round(2,'common') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

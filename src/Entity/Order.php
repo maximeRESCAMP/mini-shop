@@ -31,12 +31,11 @@ class Order
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: 'La référence ne peut pas être vide')]
-
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'La ville doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La ville ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'La réfference doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'La réfference ne peut pas dépasser {{ limit }} caractères'
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-z0-9-]{3,50}$/',

@@ -24,7 +24,7 @@ final class ProductController extends AbstractController
     {
         $tabProduct = $em->getRepository(Product::class)->findAll();
         $tabItemCartOrder = $cartItemRepository->findIdByUser($user);
-        return $this->render('product/index.html.twig', [
+        return $this->render('product/detail.html.twig', [
             'products' => $tabProduct,
             'tabItemCartOrder' => $tabItemCartOrder,
         ]);

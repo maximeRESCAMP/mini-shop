@@ -18,7 +18,7 @@ final class AddressController extends AbstractController
     #[Route('', name: '')]
     public function listAdresses(Request $request, EntityManagerInterface $em, #[CurrentUser] ?User $user): Response
     {
-        return $this->render('address/index.html.twig', [
+        return $this->render('address/detail.html.twig', [
             'user' => $user,
         ]);
     }
