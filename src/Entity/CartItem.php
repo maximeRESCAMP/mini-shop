@@ -2,24 +2,28 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CartItemRepository::class)]
+#[ORM\Table(
+    name: 'cart_item',
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: 'user_product_unique', columns: ['user_id', 'product_id'])
+    ]
+)]
 #[UniqueEntity(
     fields: ['user', 'product'],
     message: 'Ce produit est déjà dans votre panier'
 )]
 #[ORM\HasLifecycleCallbacks]
-
 class CartItem
 {
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $updatedAt = null;
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -34,14 +38,13 @@ class CartItem
     private ?Product $product = null;
 
     #[ORM\Column]
-    #[Assert\PositiveOrZero(message:'La valeur doit être égal ou supérieur a 0')]
+    #[Assert\Positive(message: 'La valeur doit être supérieur a 0')]
     #[Assert\Type(type: 'integer', message: 'La quantité doit être un nombre entier')]
     #[Assert\LessThanOrEqual(
         value: 10000,
         message: 'La quantité ne peut pas dépasser {{ compared_value }}'
     )]
-
-    private ?int $quantity = null;
+    private ?int $quantity = 1;
 
     public function getId(): ?int
     {
@@ -82,31 +85,5 @@ class CartItem
         $this->quantity = $quantity;
 
         return $this;
-    }
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-    return $this->createdAt;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTime();
-
-    }
-
-    #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
-    {
-        $this->updatedAt = new \DateTime();
     }
 }

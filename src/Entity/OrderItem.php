@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
 use App\Repository\OrderItemRepository;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,10 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class OrderItem
 {
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-    #[ORM\Column(type: 'datetime')]
-    private ?DateTimeInterface $updatedAt = null;
+    use TimestampableTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,15 +27,17 @@ class OrderItem
     #[Assert\NotNull(message: 'La quantité est obligatoire')]
     private ?int $quantity = null;
 
-    #[ORM\Column]
-    #[Assert\Positive(message:'Le prix doit être supérieur à 0')]
-    #[Assert\NotNull(message: 'Le prix est obligatoire')]
-    private ?float $price = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $userOrder = null;
 
+    #[ORM\Column]
+    private ?float $total = null;
+
+    #[ORM\Column]
+    private ?float $unitPrice = null;
     public function getId(): ?int
     {
         return $this->id;
@@ -68,17 +67,6 @@ class OrderItem
         return $this;
     }
 
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): static
-    {
-        $this->price = $price;
-
-        return $this;
-    }
 
     public function getUserOrder(): ?Order
     {
@@ -92,28 +80,28 @@ class OrderItem
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+
+    public function getTotal(): ?float
     {
-        return $this->createdAt;
+        return $this->total;
     }
 
-
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function setTotal(float $total): static
     {
-        return $this->updatedAt;
+        $this->total = $total;
+
+        return $this;
     }
 
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function getUnitPrice(): ?float
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTime();
-
+        return $this->unitPrice;
     }
 
-    #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
+    public function setUnitPrice(float $unitPrice): static
     {
-        $this->updatedAt = new \DateTime();
+        $this->unitPrice = $unitPrice;
+
+        return $this;
     }
 }

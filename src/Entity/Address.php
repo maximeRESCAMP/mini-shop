@@ -2,10 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
 use App\Repository\AddressRepository;
-use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -13,20 +11,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Address
 {
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-    #[ORM\Column(type: 'datetime')]
-    private ?DateTimeInterface $updatedAt = null;
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    private ?string $country = null;
 
     #[ORM\Column(length: 5)]
     #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
     #[Assert\Regex(
-        pattern: '/\d{5}/',
+        pattern: '/^\d{5}$/',
         message: 'Le champ  ne doit contenir que des chiffres'
     )]
     private ?string $zipCode = null;
@@ -54,30 +53,32 @@ class Address
         maxMessage: 'La rue ne peut pas dépasser {{ limit }} caractères'
     )]
     #[Assert\Regex(
-        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ0-9\' -]{3,50}$/',
+        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ0-9\' .’-]{3,50}$/',
         message: 'Le champ  ne doit contenir que des lettre chiffre ou espace - ou bien \''
     )]
     private ?string $street = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
-    private ?string $country = null;
+    #[ORM\ManyToOne(inversedBy: 'addresses')]
+    private ?User $user = null;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'deliveryAddresses')]
-    private Collection $users;
-
-    public function __construct()
-    {
-        $this->users = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): static
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
 
     public function getZipCode(): ?string
     {
@@ -115,66 +116,16 @@ class Address
         return $this;
     }
 
-    public function getCountry(): ?string
+    public function getUser(): ?User
     {
-        return $this->country;
+        return $this->User;
     }
 
-    public function setCountry(string $country): static
+    public function setUser(?User $User): static
     {
-        $this->country = $country;
+        $this->User = $User;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): static
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addDeliveryAddress($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeDeliveryAddress($this);
-        }
-
-        return $this;
-    }
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-
-    public function getUpdatedAt(): ?DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTime();
-
-    }
-
-    #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
-    {
-        $this->updatedAt = new \DateTime();
-    }
 }

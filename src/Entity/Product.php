@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,8 +10,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-
-
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -24,27 +23,25 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class Product
 {
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $updatedAt = null;
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, unique: true)]
-    #[Assert\NotBlank(message: 'Ce champ  ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'Le nom ne peut pa être vide')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'La rue doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La rue ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
     )]
     private ?string $name = null;
 
     #[ORM\Column(length: 50, unique: true)]
-    #[Assert\NotBlank(message: 'Ce champ  ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'Le nom ne peut pa être vide')]
     #[Assert\Length(
         min: 3,
         max: 50,
@@ -57,8 +54,8 @@ class Product
     )]
     private ?string $slug = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Assert\NotBlank(message: 'Ce champ  ne peut pa être vide')]
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
+    #[Assert\NotBlank(message: 'La description est obligatoire')]
     #[Assert\Length(
         min: 10,
         max: 1000,
@@ -76,11 +73,11 @@ class Product
     #[ORM\Column]
     #[Assert\NotNull(message: 'Le stock est obligatoire')]
     #[Assert\PositiveOrZero(message: 'Le stock ne peut pas être négatif')]
+    #[Assert\LessThanOrEqual(100000, message: 'le stock ne peux pas dépasser {{ limit }}')]
     private ?int $stock = null;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $image = null;
-
 
     /**
      * @var Collection<int, CartItem>
@@ -121,7 +118,7 @@ class Product
 
     public function setSlug(string $slug): static
     {
-        $this->slug = $slug;
+        $this->slug = strtolower(trim($slug));
 
         return $this;
     }
@@ -217,28 +214,4 @@ class Product
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTime();
-
-    }
-
-    #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
-    {
-        $this->updatedAt = new \DateTime();
-    }
 }

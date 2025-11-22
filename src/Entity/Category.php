@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
 use App\Repository\CategoryRepository;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,10 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Category
 {
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-    #[ORM\Column(type: 'datetime')]
-    private ?DateTimeInterface $updatedAt = null;
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,7 +26,6 @@ class Category
 
     #[ORM\Column(length: 50, unique: true)]
     #[Assert\NotBlank(message: 'Le nom de la catégorie ne peut pas être vide')]
-
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
         message: 'Le nom de la catégorie doit contenir uniquement des lettres, espaces, tirets ou apostrophes (3 à 50 caractères).'
@@ -36,12 +33,12 @@ class Category
     private ?string $name = null;
 
     #[ORM\Column(length: 50,unique: true)]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide')]
+    #[Assert\NotBlank(message: 'Le slug ne peut pas être vide')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'Le nom de catégorie doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'Le nom de catégorie ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'Le nom du slug doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom du slug ne peut pas dépasser {{ limit }} caractères'
     )]
     #[Assert\Regex('/^[a-z0-9-]+$/', message: 'Le slug ne doit contenir que des lettres minuscules, chiffres et tirets.')]
     private ?string $slug = null;
@@ -52,7 +49,7 @@ class Category
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category')]
     private Collection $products;
 
-     public function __construct()
+    public function __construct()
      {
          $this->products = new ArrayCollection();
      }
@@ -89,7 +86,7 @@ class Category
     /**
      * @return Collection<int, Product>
      */
-    public function getProduct(): Collection
+    public function getProducts(): Collection
     {
         return $this->products;
     }
@@ -115,31 +112,4 @@ class Category
 
         return $this;
     }
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-
-    public function getUpdatedAt(): ?DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTime();
-
-    }
-
-    #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
-    {
-        $this->updatedAt = new \DateTime();
-    }
-
-
-
 }

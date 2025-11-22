@@ -2,24 +2,25 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
+use App\Enum\OrderStatus;
 use App\Repository\OrderRepository;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\Table(name: '`order`')]
+#[ORM\Table(name: 'orders')]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['reference'], message: 'Une Référence avec ce nom existe déjà.')]
+
 
 class Order
 {
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-    #[ORM\Column(type: 'datetime')]
-    private ?DateTimeInterface $updatedAt = null;
+    use TimestampableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,7 +30,7 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?User $user = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50,unique: true, nullable: false)]
     #[Assert\NotBlank(message: 'La référence ne peut pas être vide')]
     #[Assert\Length(
         min: 3,
@@ -55,8 +56,11 @@ class Order
     /**
      * @var Collection<int, OrderItem>
      */
-    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'userOrder')]
+    #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'userOrder', cascade: ['persist'],orphanRemoval: true)]
     private Collection $orderItems;
+
+    #[ORM\Column(type: 'string', length: 20, enumType: OrderStatus::class)]
+    private ?OrderStatus $status = OrderStatus::Pending;
 
     public function __construct()
     {
@@ -146,27 +150,15 @@ class Order
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getStatus(): ?OrderStatus
     {
-        return $this->createdAt;
+        return $this->status;
     }
 
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function setStatus(OrderStatus $status): static
     {
-        return $this->updatedAt;
-    }
+        $this->status = $status;
 
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
-    {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTime();
-
-    }
-
-    #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
-    {
-        $this->updatedAt = new \DateTime();
+        return $this;
     }
 }

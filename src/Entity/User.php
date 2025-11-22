@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableTrait;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,14 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(fields: ['email'], message: 'Une compte existe déja avec cette mails.')]
-
-
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $updatedAt = null;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -43,15 +38,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string|null The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'Le mots de passe ne peut pa être vide')]
     #[Assert\NotCompromisedPassword(message: 'Mot de passe compromis ')]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'Le prénom ne peut pa être vide')]
     #[Assert\Length(
         min: 3,
         max: 50,
@@ -60,12 +55,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
-        message: 'Le champ  ne doit contenir que des lettres, espaces, tirets, apostrophe'
+        message: 'Le prénom  ne doit contenir que des lettres, espaces, tirets, apostrophe'
     )]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'Le nom de famille ne peut pa être vide')]
     #[Assert\Length(
         min: 3,
         max: 50,
@@ -79,24 +74,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
     #[ORM\Column(length: 15)]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'Le téléphone ne peut pa être vide')]
     #[Assert\Regex(
         pattern: '/^(?:\+33|0)[1-9](\d{2}){4}$/',
-        message: 'Le champ  ne doit contenir que des chiffres'
+        message: 'Format de numéro invalide'
     )]
     #[Assert\Length(
         max: 15,
         maxMessage: 'Le numéro ne peut pas dépasser {{ limit }} caractères'
     )]
     private ?string $phone = null;
-
-    /**
-     * @var Collection<Address>
-     * @Assert\Valid
-     */
-    #[ORM\ManyToMany(targetEntity: Address::class, inversedBy: 'users')]
-    #[Assert\Valid]
-    private Collection $deliveryAddresses;
 
     /**
      * @var Collection<int, CartItem>
@@ -110,11 +97,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, Address>
+     */
+    #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'user')]
+    private Collection $addresses;
+
+    use TimestampableTrait;
+
+
+
     public function __construct()
     {
-        $this->deliveryAddresses = new ArrayCollection();
         $this->cartItems = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -235,30 +232,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<Address>
-     */
-    public function getDeliveryAddresses(): Collection
-    {
-        return $this->deliveryAddresses;
-    }
-
-    public function addDeliveryAddress(Address $deliveryAddresses): static
-    {
-        if (!$this->deliveryAddresses->contains($deliveryAddresses)) {
-            $this->deliveryAddresses->add($deliveryAddresses);
-        }
-
-        return $this;
-    }
-
-    public function removeDeliveryAddress(Address $deliveryAddresses): static
-    {
-        $this->deliveryAddresses->removeElement($deliveryAddresses);
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, CartItem>
      */
     public function getCartItems(): Collection
@@ -317,28 +290,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    public function getCreatedAt(): ?\DateTimeImmutable
+
+    /**
+     * @return Collection<int, Address>
+     */
+    public function getAddresses(): Collection
     {
-        return $this->createdAt;
+        return $this->addresses;
     }
 
-
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function addAddress(Address $address): static
     {
-        return $this->updatedAt;
+        if (!$this->addresses->contains($address)) {
+            $this->addresses->add($address);
+            $address->setUser($this);
+        }
+
+        return $this;
     }
 
-    #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function removeAddress(Address $address): static
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTime();
+        if ($this->addresses->removeElement($address)) {
+            // set the owning side to null (unless already changed)
+            if ($address->getUser() === $this) {
+                $address->setUser(null);
+            }
+        }
 
+        return $this;
     }
 
-    #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
-    {
-        $this->updatedAt = new \DateTime();
-    }
 }
