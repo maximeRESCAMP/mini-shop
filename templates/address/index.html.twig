@@ -25,14 +25,15 @@
                     </thead>
 
                     <tbody>
-                    {% for deliveryAddres in user.deliveryAddresses %}
+                    {% for deliveryAddres in addresses %}
                         <tr>
                             <td>{{ deliveryAddres.country }}</td>
                             <td>{{ deliveryAddres.zipCode }}</td>
                             <td>{{ deliveryAddres.city }}</td>
                             <td>{{ deliveryAddres.street }}</td>
                             <td>
-                                <a href="{{path('app_address_remove', parameters = {id:deliveryAddres.id})}}" class="btn btn-danger mb-3"> Supprimer</a>
+                                <a href="{{path('app_address_delete', parameters = {id:deliveryAddres.id})}}" class="btn btn-danger mb-3"> Supprimer</a>
+                                <a href="{{path('app_address_update', parameters = {id:deliveryAddres.id})}}" class="btn btn-primary mb-3"> Modifier</a>
                             </td>
                         </tr>
                     {% endfor %}

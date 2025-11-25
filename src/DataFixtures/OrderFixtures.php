@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Address;
 use App\Entity\Order;
 use App\Entity\User;
+use App\Enum\OrderStatus;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -18,12 +19,14 @@ class OrderFixtures extends Fixture implements FixtureGroupInterface, DependentF
         $faker = Faker\Factory::create('fr_FR');
         $tabUser = $manager->getRepository(User::class)->findAll();
         $tabAddress = $manager->getRepository(Address::class)->findAll();
+        $tabStatut = OrderStatus::cases();
         for ($i = 0; $i < 10; $i++) {
             $order = new Order();
-            $order->setReference($faker->unique()->ean8());
-            $order->setTotal($faker->randomFloat($nbMaxDecimals = 2, $min = 3, $max = 100));
             $order->setUser($faker->randomElement($tabUser));
+            $order->setReference($faker->unique()->ean8());
             $order->setAddress($faker->randomElement($tabAddress));
+            $order->setTotal($faker->randomFloat($nbMaxDecimals = 2, $min = 3, $max = 100));
+            $order->setStatus($faker->randomElement($tabStatut));
             $manager->persist($order);
 
         }
@@ -41,6 +44,6 @@ class OrderFixtures extends Fixture implements FixtureGroupInterface, DependentF
 
     public static function getGroups(): array
     {
-        return ['test1'];
+        return ['test3'];
     }
 }

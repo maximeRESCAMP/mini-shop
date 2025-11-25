@@ -77,7 +77,7 @@ class Product
     private ?int $stock = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    private ?string $image = null;
+    private ?string $picture = null;
 
     /**
      * @var Collection<int, CartItem>
@@ -159,18 +159,17 @@ class Product
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getPicture(): ?string
     {
-        return $this->image;
+        return $this->picture;
     }
 
-    public function setImage(?string $image): static
+    public function setPicture(?string $picture): static
     {
-        $this->image = $image;
+        $this->picture = $picture;
 
         return $this;
     }
-
 
     /**
      * @return Collection<int, CartItem>

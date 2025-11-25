@@ -100,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Address>
      */
-    #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'user', cascade: ['persist'] )]
     private Collection $addresses;
 
     use TimestampableTrait;

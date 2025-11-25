@@ -53,8 +53,8 @@ class Address
         maxMessage: 'La rue ne peut pas dépasser {{ limit }} caractères'
     )]
     #[Assert\Regex(
-        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ0-9\' .’-]{3,50}$/',
-        message: 'Le champ  ne doit contenir que des lettre chiffre ou espace - ou bien \''
+        pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ0-9\' ,.’-]{3,50}$/',
+        message: 'Le champ  ne doit contenir que des lettre chiffre ou espace tirer virgule ou bien \''
     )]
     private ?string $street = null;
 
@@ -118,12 +118,12 @@ class Address
 
     public function getUser(): ?User
     {
-        return $this->User;
+        return $this->user;
     }
 
     public function setUser(?User $User): static
     {
-        $this->User = $User;
+        $this->user = $User;
 
         return $this;
     }

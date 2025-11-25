@@ -27,8 +27,6 @@ class OrderItem
     #[Assert\NotNull(message: 'La quantité est obligatoire')]
     private ?int $quantity = null;
 
-
-
     #[ORM\ManyToOne(inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $userOrder = null;
