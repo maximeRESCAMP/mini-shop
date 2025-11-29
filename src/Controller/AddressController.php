@@ -4,16 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Address;
 use App\Entity\User;
-use App\Exception\AddressAlreadyExistsException;
+use App\Exception\Address\AddressAlreadyExistsException;
+use App\Exception\Address\AddressUserNotFoundException;
+use App\Exception\Address\CannotQueryAddressException;
+use App\Exception\Address\CannotSaveAddressException;
 use App\Form\AddressType;
+use App\Security\AddressVoter;
 use App\Service\AddressService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+
 
 #[Route('/address', name: 'app_address_')]
 final class AddressController extends AbstractController
@@ -22,100 +25,81 @@ final class AddressController extends AbstractController
     {
     }
 
+    /**
+     * @throws AddressUserNotFoundException
+     */
     #[Route('', name: 'list', methods: ['GET'])]
-    public function index(#[CurrentUser] ?User $user): Response
+    public function index(#[CurrentUser] User $user): Response
     {
         return $this->render('address/index.html.twig', [
             'addresses' => $this->addressService->findByUser($user)
         ]);
     }
 
+    /**
+     * @throws AddressAlreadyExistsException
+     * @throws CannotQueryAddressException
+     * @throws CannotSaveAddressException
+     */
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
-    public function create(Request $request, #[CurrentUser] ?User $user): Response
+    public function create(Request $request, #[CurrentUser] User $user): Response
     {
         $form = $this->createForm(AddressType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $address = $form->getData();
-            try {
-                $this->addressService->ensureUniqueForUser($address, $user);
-                $address = $this->addressService->assignUser($address, $user);
-                $this->addressService->save($address);
-                $this->addFlash(
-                    'success',
-                    'Ajout réussi!'
-                );
-                return $this->redirectToRoute('app_address_list');
-            } catch (AddressAlreadyExistsException $th) {
-                $form->addError(new FormError($th->getMessage()));
-            }
-
+            $this->addressService->uniqueForUser($address, $user);
+            $this->addressService->assignUser($address, $user);
+            $this->addFlash(
+                'success',
+                'Ajout de l\'adreese réussi!'
+            );
+            return $this->redirectToRoute('app_address_list');
         }
         return $this->render('address/add.html.twig', [
             'form' => $form,
         ]);
     }
 
+    /**
+     * @throws AddressAlreadyExistsException
+     * @throws CannotQueryAddressException|CannotSaveAddressException
+     */
     #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Address $address, #[CurrentUser] ?User $user, Request $request, EntityManagerInterface $em): Response
+    public function edit(Address $address, #[CurrentUser] ?User $user, Request $request): Response
     {
+        $this->denyAccessUnlessGranted(AddressVoter::EDIT, $address);
         $form = $this->createForm(AddressType::class, $address);
-
-        try {
-            $isExist = $this->addressService->userOwnsAddress($address, $user);
-            if (!$isExist) {
-                throw $this->createAccessDeniedException();
-            }
-        }catch (AddressAlreadyExistsException $th) {
-            return $this->render('address/add.html.twig', [
-                'form' => $form,
-            ]);
-        }
-
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $addressForm = $form->getData();
-            try {
-                $this->addressService->ensureUniqueForUser($addressForm, $user);
-                $isExist = $this->addressService->userOwnsAddress($addressForm, $user);
-                if (!$isExist) {
-                    throw $this->createAccessDeniedException();
-                } else {
-                    $this->addressService->save($addressForm);
-                }
-
-                $this->addFlash(
-                    'success',
-                    'Modification réussi!'
-                );
-                return $this->redirectToRoute('app_address_list');
-
-            } catch (AddressAlreadyExistsException $th) {
-                $form->addError(new FormError($th->getMessage()));
-
-            }
-
-        }
-        return $this->render('address/add.html.twig', [
-            'form' => $form,
-        ]);
-
-    }
-
-    #[Route('/delete/{id}', name: 'delete', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function delete(Address $address, #[CurrentUser] ?User $user): Response
-    {
-        $isExist = $this->addressService->userOwnsAddress($address, $user);
-        if (!$isExist) {
-            throw $this->createAccessDeniedException();
-        } else {
-            $address = $this->addressService->dissociateAddressFromUser($user, $address);
+            $this->addressService->uniqueForUser($addressForm, $user);
             $this->addressService->save($address);
             $this->addFlash(
                 'success',
-                'Supression réussi!'
+                'Modification de l\'adresse réussi!'
             );
+            return $this->redirectToRoute('app_address_list');
         }
+        return $this->render('address/add.html.twig', [
+            'form' => $form,
+        ]);
+
+    }
+
+    /**
+     * @throws CannotSaveAddressException
+     */
+    #[Route('/delete/{id}', name: 'delete', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function delete(Address $address, #[CurrentUser] ?User $user): Response
+    {
+        $this->denyAccessUnlessGranted(AddressVoter::DELETE, $address);
+        $this->addressService->dissociateAddressFromUser($address);
+        $this->addFlash(
+            'success',
+            'Supression de l\'adresse réussi!'
+        );
 
         return $this->redirectToRoute('app_address_list');
     }

@@ -22,15 +22,14 @@
                     </thead>
 
                     <tbody>
-                    {% for item in tabCartItem %}
+                    {% for cartItem in cartItems %}
                         <tr>
-                            <td>{{ item.product.image }}</td>
-                            <td>{{ item.product.name }}</td>
-                            <td>{{ item.product.price | round(2,'common') }}</td>
-                            <td>{{ item.quantity }}</td>
+                            <td>{{ cartItem.product.picture }}</td>
+                            <td>{{ cartItem.product.name }}</td>
+                            <td>{{ cartItem.product.price | round(2,'common') }}</td>
+                            <td>{{ cartItem.quantity }}</td>
                             <td>
-                                <a href="{{path('app_cart_item_removeCart', parameters = {id:item.id})}}" class="btn btn-danger mb-3"> Supprimer</a>
-{#                                <a href="{{path('app_update_category', parameters = {id:category.id})}}" class="btn btn-primary mb-3"> Modifier une catégorie </a>#}
+                                <a href="{{path('app_cart_item_delete', parameters = {id:cartItem.id})}}" class="btn btn-danger mb-3"> Supprimer</a>
                             </td>
                         </tr>
                     {% endfor %}

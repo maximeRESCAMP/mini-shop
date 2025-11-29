@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CartItem;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,7 +20,7 @@ class CartItemRepository extends ServiceEntityRepository
         /**
          * @return CartItem[] Returns an array of CartItem objects
          */
-        public function findIdByUser($user): array
+        public function findProductIdsByUser(User $user): array
         {
             return $this->createQueryBuilder('ci')
                 ->select('IDENTITY(ci.product)')

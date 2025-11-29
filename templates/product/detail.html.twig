@@ -11,7 +11,7 @@
             <div class="row g-4 align-items-start">
 
                 <div class="col-md-5 text-center">
-                    <img src="{{ product.image }}"
+                    <img src="{{ product.picture }}"
                          alt="{{ product.name }}"
                          class="img-fluid rounded border shadow-sm"
                          style="max-height: 350px; object-fit: contain;">
@@ -57,10 +57,10 @@
                         {{ form_end(form) }}
                     {% else %}
                         {% if (inCartItem) %}
-                            <a href="{{ path('app_cart_item_remove',{id: product.id}) }}"
+                            <a href="{{ path('app_cart_item_delete_by_product',{id: product.id}) }}"
                                class="btn btn-danger mb-3">Supprimer du pannier</a>
                         {% endif %}
-                        {% if (notInStock) %}
+                        {% if (rupture) %}
                             <button class="btn btn-secondary" disabled>Plus de stock</button>
                         {% endif %}
                     {% endif %}

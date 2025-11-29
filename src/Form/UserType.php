@@ -64,7 +64,7 @@ class UserType extends AbstractType
                     'class' => 'form-control',
                     'autocomplete' => 'tel',
                 ]])
-            ->add('deliveryAddresses', CollectionType::class, [
+            ->add('addresses', CollectionType::class, [
                 'entry_type' => AddressType::class,
                 'by_reference' => false,
                 'entry_options' => [

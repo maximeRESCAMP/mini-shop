@@ -23,7 +23,7 @@
                     {% for product in products %}
                         <tr>
                             <td>
-                                {{ product.image }}">
+                                {{ product.picture }}">
                             </td>
                             <td>{{ product.category.name }}</td>
                             <td>
@@ -37,9 +37,9 @@
                                 {% if product.stock < 1 %}
                                     <button class="btn btn-secondary" disabled>Plus de stock</button>
                                 {% endif %}
-                                {% if (product.id in tabItemCartOrder) %}
-                                    <a href="{{ path('app_cart_item_remove',{id: product.id}) }}"
-                                       class="btn btn-danger mb-3">Supprimer du pannier</a>
+                                {% if (product.id in itemsCartOrder) %}
+                                    <a href="{{ path('app_cart_item_delete_by_product',{id: product.id}) }}"
+                                       class="btn btn-danger mb-3">Supprimer du panniers</a>
                                 {% else %}
                                     {% if product.stock > 0 %}
                                         <a href="{{ path('app_cart_item_add',{id: product.id}) }}"

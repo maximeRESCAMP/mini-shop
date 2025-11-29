@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Service;
+
+use App\Entity\CartItem;
+use App\Entity\Product;
+use App\Entity\User;
+use App\Exception\CartItem\CannotDeleteCartItemException;
+use App\Exception\CartItem\CannotQueryCartItemException;
+use App\Exception\CartItem\CannotSaveCartItemException;
+use App\Repository\CartItemRepository;
+use Doctrine\ORM\EntityManagerInterface;
+
+readonly class CartItemService
+{
+    public function __construct(private EntityManagerInterface $em, private CartItemRepository $cartItemRepository)
+    {
+    }
+
+    /**
+     * @throws CannotQueryCartItemException
+     */
+    public function findByUser(User $user): array
+    {
+        try {
+            return $this->cartItemRepository->findBy(['user' => $user]);
+
+        } catch (\Throwable $exception) {
+            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+        }
+    }
+
+    /**
+     * @throws CannotQueryCartItemException
+     */
+    public function findByUserAndProduct(User $user, Product $product): ?CartItem
+    {
+        try {
+            return $this->cartItemRepository->findOneBy(['user' => $user, 'product' => $product]);
+        } catch (\Throwable $exception) {
+            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+        }
+    }
+
+    /**
+     * @throws CannotQueryCartItemException
+     */
+    public function findAllProductsByUser(User $user): array
+    {
+        try {
+            return $this->cartItemRepository->findProductIdsByUser($user);
+        } catch (\Throwable $exception) {
+            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+        }
+    }
+
+    /**
+     * @throws CannotQueryCartItemException
+     */
+    public function findOneByProductAndUser(User $user, Product $product): ?CartItem
+    {
+        try {
+            return $this->cartItemRepository->findOneBy(['product' => $product, 'user' => $user]);
+        } catch (\Throwable $exception) {
+            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+        }
+    }
+
+    /**
+     * @throws CannotSaveCartItemException
+     */
+    public function insertCartItem(User $user, Product $product, CartItem $cartItem): void
+    {
+        try {
+            $cartItem->setUser($user);
+            $cartItem->setProduct($product);
+            $this->em->persist($cartItem);
+            $this->em->flush();
+        } catch (\Throwable $exception) {
+            throw new CannotSaveCartItemException(CannotSaveCartItemException::$messageSave);
+        }
+
+    }
+
+    /**
+     * @throws CannotDeleteCartItemException
+     */
+    public function removeCartItem(CartItem $cartItem): void
+    {
+        try {
+            $this->em->remove($cartItem);
+            $this->em->flush();
+        } catch (\Throwable $exception) {
+            throw new CannotDeleteCartItemException(CannotDeleteCartItemException::$messageDelete);
+        }
+
+    }
+
+
+    public function setQuantity(int $quantity = 1): CartItem
+    {
+        $cartItem = new CartItem();
+        return $cartItem->setQuantity($quantity);
+    }
+
+}

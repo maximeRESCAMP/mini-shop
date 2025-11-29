@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Address;
 use App\Entity\User;
 use App\Form\RegisterType;
+use App\Form\UserType;
+use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +16,10 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    public function __construct(private UserService $userService)
+    {
+    }
+
     #[Route(path: '/ ', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -37,31 +43,16 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/register', name: 'app_register')]
-    public function register(Request $request, EntityManagerInterface $em): Response
+    public function register(Request $request): Response
     {
         $user = new User();
-        $user->addDeliveryAddress(new Address());
-        $form = $this->createForm(RegisterType::class, $user);
+        $user->addAddress(new Address());
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()&& $form->isValid()) {
             $user = $form->getData();
-            $newAdresseLivraison = $user->getDeliveryAddresses()->first();
-            $oldAdresseLivraison = $em->getRepository(Address::class)->findOneBy([
-                'zipCode' => $newAdresseLivraison->getZipCode(),
-                'street' => $newAdresseLivraison->getStreet(),
-                'city' => $newAdresseLivraison->getCity(),
-                'country' => $newAdresseLivraison->getCountry()
-            ]);
-            if ($oldAdresseLivraison) {
-                $user->removeDeliveryAddress($newAdresseLivraison);
-                $user->addDeliveryAddress($oldAdresseLivraison);
-            }else{
-                $em->persist($newAdresseLivraison);
-            }
-
-            $em->persist($user);
-            $em->flush();
+            $this->userService->insertUser($user);
             return $this->redirectToRoute('app_login');
         }
 
