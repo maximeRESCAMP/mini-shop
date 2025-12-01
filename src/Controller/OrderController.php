@@ -27,6 +27,8 @@ final class OrderController extends AbstractController
     {
         return $this->render('order/index.html.twig', [
             'orders' => $this->orderService->findOrderByUser($user),
+            "nom_col" => ["Date de Création","Réfférence","Adresse","Total","Statut"],
+
         ]);
     }
 
@@ -42,3 +44,4 @@ final class OrderController extends AbstractController
         ]);
     }
 }
+

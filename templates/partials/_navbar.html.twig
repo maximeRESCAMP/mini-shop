@@ -1,0 +1,67 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-tools"></i> Administration
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ path('app_admin_category_list') }}">Liste des catégories</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_admin_category_add') }}">Créer une catégorie</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_admin_product_list') }}">Liste des produits</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_admin_product_add') }}">Créer un produit</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+
+                {% if app.user %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> Mon compte
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ path('app_address_list') }}">Mes adresses</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_address_add') }}">Ajouter une adresse</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_cart_item_list') }}">Mon panier</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_order_list') }}">Mes commandes</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_product_list') }}">
+                            <i class="bi bi-box"></i> Produits
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{{ path('app_logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> Se déconnecter
+                        </a>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}">
+                            <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_register') }}">
+                            <i class="bi bi-pencil-square"></i> S'inscrire
+                        </a>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>

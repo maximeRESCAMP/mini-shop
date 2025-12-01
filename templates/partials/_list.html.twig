@@ -1,0 +1,28 @@
+<div class="container py-5">
+    <div class="bg-white shadow rounded p-4">
+        <h1 class="text-center mb-4">Liste {{ titre }}</h1>
+        {% if route_add %}
+        <div class="d-flex justify-content-end">
+            <a href="{{ path(route_add) }}" class="btn btn-success mb-3">
+                Ajouter {{ route_add_name }}
+            </a>
+        </div>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle text-center">
+                <thead class="table-dark">
+                <tr>
+                    {% for col in nom_col %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+
+                {% block tableauDonnee %}{% endblock %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>

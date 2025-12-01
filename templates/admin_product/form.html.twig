@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% if is_update %}
+    {% set createOrUpdate = 'Modifier' %}
+{% else %}
+    {% set createOrUpdate = 'Créer' %}
+{% endif %}
+{% block title %}{{ createOrUpdate }} un produit{% endblock %}
+
+{% block body %}
+    {% embed 'partials/_form.html.twig' with {
+        name: 'un produit',
+        createOrUpdate: createOrUpdate,
+    } %}
+        {% block form %}
+
+            {{ form_start(form) }}
+            <div class="my-custom-class-for-errors mb-3">
+                {{ form_errors(form) }}
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.slug) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.description) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.price) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.stock) }}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form_row(form.picture) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.category) }}
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary w-100"> {{ createOrUpdate }}</button>
+            </div>
+            {{ form_end(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+

@@ -9,12 +9,6 @@
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
-            {% if app.user %}
-                <div class="mb-3 text-center">
-                    Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>, <a
-                        href="{{ path('app_logout') }}">Déconnexion</a>
-                </div>
-            {% endif %}
             <h1 class="h3 mb-3 font-weight-normal text-center">Connexion</h1>
             <label for="username">Email</label>
             <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control"

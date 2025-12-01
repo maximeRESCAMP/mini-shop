@@ -28,9 +28,11 @@ class AdminProductController extends AbstractController
     public function index(): Response
     {
         return $this->render('admin_product/index.html.twig', [
-            'products' => $this->productService->findAll()
+            'products' => $this->productService->findAll(),
+            'nom_col'=> ['Image','Nom Catégorie','Nom Produit','Slug','Déscription','Prix','Stock','Action']
         ]);
     }
+
 
     /**
      * @throws CannotSaveProductException
@@ -50,8 +52,9 @@ class AdminProductController extends AbstractController
             return $this->redirectToRoute('app_admin_product_list');
         }
 
-        return $this->render('admin_product/add.html.twig', [
+        return $this->render('admin_product/form.html.twig', [
             'form' => $form,
+            'is_update' => false,
         ]);
     }
 
@@ -87,8 +90,9 @@ class AdminProductController extends AbstractController
             );
             return $this->redirectToRoute('app_admin_product_list');
         }
-        return $this->render('admin_product/add.html.twig', [
+        return $this->render('admin_product/form.html.twig', [
             'form' => $form,
+            'is_update' => true,
         ]);
     }
 }

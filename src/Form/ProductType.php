@@ -72,14 +72,7 @@ class ProductType extends AbstractType
                     'class' => 'form-control',
                     'inputmode' => 'text'
                 ]
-            ])
-            ->add('save', SubmitType::class,
-                [
-                    'label' => 'Valider',
-                    'attr' => [
-                        'class' => 'btn btn-primary w-100',
-                    ]
-                ]);
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

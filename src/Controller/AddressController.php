@@ -32,7 +32,8 @@ final class AddressController extends AbstractController
     public function index(#[CurrentUser] User $user): Response
     {
         return $this->render('address/index.html.twig', [
-            'addresses' => $this->addressService->findByUser($user)
+            'addresses' => $this->addressService->findByUser($user),
+            'nom_col' => ['Pays','Code Postal','Ville','Rue','Action'],
         ]);
     }
 
@@ -56,10 +57,12 @@ final class AddressController extends AbstractController
             );
             return $this->redirectToRoute('app_address_list');
         }
-        return $this->render('address/add.html.twig', [
+        return $this->render('address/form.html.twig', [
             'form' => $form,
+            'is_update' => false,
         ]);
     }
+
 
     /**
      * @throws AddressAlreadyExistsException
@@ -82,8 +85,9 @@ final class AddressController extends AbstractController
             );
             return $this->redirectToRoute('app_address_list');
         }
-        return $this->render('address/add.html.twig', [
+        return $this->render('address/form.html.twig', [
             'form' => $form,
+            'is_update' => true,
         ]);
 
     }

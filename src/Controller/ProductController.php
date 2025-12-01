@@ -34,6 +34,7 @@ final class ProductController extends AbstractController
         return $this->render('product/index.html.twig', [
             'products' => $this->productService->findAll(),
             'itemsCartOrder' => $this->cartItemService->findAllProductsByUser($user),
+            'nom_col' => ['Image', 'Catégorie', 'Produit', 'Prix', 'Action'],
         ]);
     }
 
@@ -47,7 +48,7 @@ final class ProductController extends AbstractController
         $form = null;
         $rupture = $this->productService->checkIfRupture($product);
         $inCartItem = $this->cartItemService->findOneByProductAndUser($user, $product);
-        if(!$rupture && is_null($inCartItem)){
+        if (!$rupture && is_null($inCartItem)) {
             $form = $this->createForm(CartItemType::class);
             $form->handleRequest($request);
         }
@@ -55,12 +56,12 @@ final class ProductController extends AbstractController
         if (isset($form) && $form->isSubmitted()) {
             $cartItem = $form->getData();
 
-            if (!$this->productService->checkIfStockSupOrder($product, $cartItem)){
+            if (!$this->productService->checkIfStockSupOrder($product, $cartItem)) {
                 $form->get('quantity')->addError(new FormError('Il n\'y plus que ' . $product->getStock() . ' produit(s) disponible(s).'));
             }
 
             if ($form->isValid()) {
-               $this->cartItemService->insertCartItem($user, $product, $cartItem);
+                $this->cartItemService->insertCartItem($user, $product, $cartItem);
                 $this->addFlash(
                     'success',
                     'L\'article a été ajouté au panier !'

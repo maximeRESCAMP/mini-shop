@@ -32,6 +32,7 @@ final class CartItemController extends AbstractController
     {
         return $this->render('cart_item/index.html.twig', [
             'cartItems' => $this->cartItemService->findByUser($user),
+            'nom_col'=> ['Image','Nom','Prix Unitaire','Quantité','Action']
         ]);
     }
 
@@ -87,6 +88,6 @@ final class CartItemController extends AbstractController
             'success',
             'L\'article a été supprimé du panier !'
         );
-        return $this->redirectToRoute('app_product_list');
+        return $this->redirectToRoute('app_cart_item_list');
     }
 }

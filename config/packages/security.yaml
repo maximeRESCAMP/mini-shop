@@ -19,8 +19,10 @@ security:
             provider: app_user_provider
             form_login:
                 login_path: app_login
+                default_target_path: app_product_list
                 check_path: app_login
                 enable_csrf: true
+                always_use_default_target_path: true
             logout:
                 path: app_logout
                 # where to redirect after logout

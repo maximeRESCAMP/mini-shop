@@ -15,8 +15,8 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['label' => 'Nom', 'attr' => ['placeholder' => 'Informatique', 'class' => 'form-control', 'inputmode' => 'text','autocomplete' => 'off']])
-            ->add('slug', TextType::class, ['label' => 'Slug', 'attr' => ['placeholder' => 'carte-mere', 'class' => 'form-control', 'inputmode' => 'text']])
-            ->add('save', SubmitType::class, ['label' => 'Valider', 'attr' => ['class' => 'btn btn-primary w-100']]);
+            ->add('slug', TextType::class, ['label' => 'Slug', 'attr' => ['placeholder' => 'carte-mere', 'class' => 'form-control', 'inputmode' => 'text']]);
+//            ->add('save', SubmitType::class, ['label' => 'Valider', 'attr' => ['class' => 'btn btn-primary w-100']]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

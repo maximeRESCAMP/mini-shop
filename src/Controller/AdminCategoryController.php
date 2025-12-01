@@ -24,6 +24,8 @@ final class AdminCategoryController extends AbstractController
     {
         return $this->render('admin_category/index.html.twig', [
             'categories' => $this->adminCategoryService->findAll(),
+            'nom_col' => ['Nom','Slug','Action'],
+
         ]);
     }
 
@@ -42,8 +44,9 @@ final class AdminCategoryController extends AbstractController
             );
             return $this->redirectToRoute('app_admin_category_list');
         }
-        return $this->render('admin/add-category.html.twig', [
+        return $this->render('admin_category/form.html.twig', [
             'form' => $form,
+            'is_update' => false,
         ]);
     }
 
@@ -91,8 +94,9 @@ final class AdminCategoryController extends AbstractController
 
             return $this->redirectToRoute('app_admin_category_list');
         }
-        return $this->render('admin/add-category.html.twig', [
+        return $this->render('admin_category/form.html.twig', [
             'form' => $form,
+            'is_update' => true,
         ]);
     }
 

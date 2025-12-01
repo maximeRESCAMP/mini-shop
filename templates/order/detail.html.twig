@@ -4,7 +4,6 @@
 
 {% block body %}
     <div class="container py-5">
-
         <div class="bg-white shadow rounded p-4">
             <h1 class="text-center mb-4">Detail de la commande {{ order.reference }}</h1>
             <div class="table-responsive">
@@ -22,9 +21,12 @@
                     <tbody>
                     {% for orderItem in order.orderItems %}
                         <tr>
-                            <td>{{ orderItem.product.picture }}</td>
-                            <td>{{  orderItem.product.name }}</td>
-                            <td>{{  orderItem.quantity }}</td>
+                            <td><img src="{{ orderItem.product.picture }}"
+                                     alt="imagge_product_{{ orderItem.product.name }}" width="100px" height="100px">
+                            </td>
+
+                            <td>{{ orderItem.product.name }}</td>
+                            <td>{{ orderItem.quantity }}</td>
                             <td>{{ orderItem.unitPrice | round(2,'common') }}</td>
                             <td>{{ orderItem.total | round(2,'common') }}</td>
                         </tr>

@@ -3,39 +3,27 @@
 {% block title %}Panier{% endblock %}
 
 {% block body %}
-    <div class="container py-5">
+    {% embed 'partials/_list.html.twig' with {
+        titre: 'des articles de votre panier',
+        route_add: false,
+        nom_col: nom_col
+    } %}
+        {% block tableauDonnee %}
 
-        <div class="bg-white shadow rounded p-4">
-            <h1 class="text-center mb-4">Panier</h1>
-            <div class="d-flex justify-content-end">
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover align-middle text-center">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>Image</th>
-                        <th>Nom</th>
-                        <th>Prix</th>
-                        <th>Quantité</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    {% for cartItem in cartItems %}
-                        <tr>
-                            <td>{{ cartItem.product.picture }}</td>
-                            <td>{{ cartItem.product.name }}</td>
-                            <td>{{ cartItem.product.price | round(2,'common') }}</td>
-                            <td>{{ cartItem.quantity }}</td>
-                            <td>
-                                <a href="{{path('app_cart_item_delete', parameters = {id:cartItem.id})}}" class="btn btn-danger mb-3"> Supprimer</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+            {% for cartItem in cartItems %}
+                <tr>
+                    <td><img src="{{ cartItem.product.picture }}" alt={{ cartItem.product.name }} width="100px"
+                             height="100px">
+                    </td>
+                    <td>{{ cartItem.product.name }}</td>
+                    <td>{{ cartItem.product.price | round(2,'common') }}</td>
+                    <td>{{ cartItem.quantity }}</td>
+                    <td>
+                        <a href="{{ path('app_cart_item_delete_cart', parameters = {id:cartItem.id}) }}"
+                           class="btn btn-danger mb-3"> Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
