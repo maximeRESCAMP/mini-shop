@@ -5,9 +5,10 @@
 {% block body %}
     {% embed 'partials/_list.html.twig' with {
         titre: 'des produits',
-        route_add: 'app_admin_product_add',
-        route_add_name: 'un produit',
-        nom_col: nom_col
+        route_add: false,
+        nom_col: nom_col,
+        'datas':products
+
     } %}
         {% block tableauDonnee %}
                     {% for product in products %}
@@ -17,7 +18,7 @@
 
                             <td>{{ product.category.name }}</td>
                             <td>
-                                <a href="{{ path('app_product_detail', {id: product.id}) }}"
+                                <a href="{{ path('app_product_detail', {slug: product.slug}) }}"
                                    class="text-decoration-none fw-bold">
                                     {{ product.name }}
                                 </a>
@@ -29,11 +30,11 @@
                                 {% endif %}
                                 {% if (product.id in itemsCartOrder) %}
                                     <a href="{{ path('app_cart_item_delete_by_product',{id: product.id}) }}"
-                                       class="btn btn-danger mb-3">Supprimer du panniers</a>
+                                       class="btn btn-danger mb-3"> <i class="bi bi-trash text-dark"></i></a>
                                 {% else %}
                                     {% if product.stock > 0 %}
                                         <a href="{{ path('app_cart_item_add',{id: product.id}) }}"
-                                           class="btn btn-primary mb-3">Ajouter au pannier</a>
+                                           class="btn btn-primary mb-3"><i class="bi bi-plus-circle-fill text-dark"></i></a>
                                     {% endif %}
 
                                 {% endif %}

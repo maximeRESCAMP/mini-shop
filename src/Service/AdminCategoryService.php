@@ -24,6 +24,23 @@ readonly class AdminCategoryService
         }
     }
 
+    public function paginateCategory(int $page){
+        try {
+            return $this->categoryRepository->paginateCategory($page);
+        } catch (\Throwable $exception) {
+            throw new (CannotQueryCategoryException::$messageQuerry);
+        }
+    }
+
+    public function findOneByCategory(string $slug): Category
+    {
+        try {
+            return $this->categoryRepository->findOneBy(['slug'=>$slug]);
+        } catch (\Throwable $exception) {
+            throw new (CannotQueryCategoryException::$messageQuerry);
+        }
+    }
+
     public function save(Category $category): void
     {
         try {

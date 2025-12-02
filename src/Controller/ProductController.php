@@ -29,22 +29,27 @@ final class ProductController extends AbstractController
      * @throws CannotQueryCartItemException
      */
     #[Route('', name: 'list')]
-    public function index(#[CurrentUser] ?User $user): Response
+    public function index(#[CurrentUser] ?User $user, Request $request): Response
     {
+        $page = $request->query->getInt('page', 1);
+
         return $this->render('product/index.html.twig', [
-            'products' => $this->productService->findAll(),
+            'products' => $this->productService->paginateProduct($page),
             'itemsCartOrder' => $this->cartItemService->findAllProductsByUser($user),
             'nom_col' => ['Image', 'Catégorie', 'Produit', 'Prix', 'Action'],
+            'val_filter' => [null, 'c.name', 'p.name', 'p.price', null],
         ]);
     }
 
     /**
      * @throws CannotQueryCartItemException
      * @throws CannotSaveCartItemException
+     * @throws CannotFoundProductException
      */
-    #[Route('/detail/{id}', name: 'detail', requirements: ['id' => '\d+'])]
-    public function detail(Product $product, Request $request, #[CurrentUser] ?User $user): Response
+    #[Route('/detail/{slug}', name: 'detail')]
+    public function detail(string $slug, Request $request, #[CurrentUser] ?User $user): Response
     {
+        $product = $this->productService->findBySLug($slug);
         $form = null;
         $rupture = $this->productService->checkIfRupture($product);
         $inCartItem = $this->cartItemService->findOneByProductAndUser($user, $product);

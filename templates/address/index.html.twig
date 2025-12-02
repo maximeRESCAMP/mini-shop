@@ -6,8 +6,9 @@
     {% embed 'partials/_list.html.twig' with {
         titre: 'des adresses de Livraison',
         route_add: 'app_address_add',
-        route_add_name: 'une adresse de livraison',
-        nom_col: nom_col
+        nom_col: nom_col,
+        val_filter: val_filter,
+        'datas':addresses
     } %}
         {% block tableauDonnee %}
             {% for deliveryAddres in addresses %}
@@ -18,12 +19,13 @@
                     <td>{{ deliveryAddres.street }}</td>
                     <td>
                         <a href="{{ path('app_address_delete', parameters = {id:deliveryAddres.id}) }}"
-                           class="btn btn-danger mb-3"> Supprimer</a>
+                           class="btn btn-danger mb-3">  <i class="bi bi-trash text-dark"></i></a>
                         <a href="{{ path('app_address_update', parameters = {id:deliveryAddres.id}) }}"
-                           class="btn btn-primary mb-3"> Modifier</a>
+                           class="btn btn-primary mb-3">   <i class="bi bi-pencil text-dark"></i></a>
                     </td>
                 </tr>
             {% endfor %}
         {% endblock %}
     {% endembed %}
+
 {% endblock %}

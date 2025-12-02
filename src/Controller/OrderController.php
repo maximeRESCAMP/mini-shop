@@ -8,6 +8,7 @@ use App\Exception\Order\CannotQueryOrderException;
 use App\Security\CartItemVoter;
 use App\Service\OrderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -23,12 +24,13 @@ final class OrderController extends AbstractController
      * @throws CannotQueryOrderException
      */
     #[Route('', name: 'list')]
-    public function index(#[CurrentUser] ?User $user): Response
+    public function index(#[CurrentUser] ?User $user, Request $request): Response
     {
+        $page = $request->query->getInt('page', 1);
         return $this->render('order/index.html.twig', [
-            'orders' => $this->orderService->findOrderByUser($user),
+            'orders' => $this->orderService->paginateOrder($user, $page),
             "nom_col" => ["Date de Création","Réfférence","Adresse","Total","Statut"],
-
+            'val_filter' => ['o.createdAt', 'o.reference', 'a.city', 'o.total','o.status'],
         ]);
     }
 
@@ -36,11 +38,12 @@ final class OrderController extends AbstractController
      * @throws CannotQueryOrderException
      */
     #[Route('/detail/{id}', name: 'detail_order', requirements: ['id' => '\d+'])]
-    public function detail(Order $order): Response
+    public function detail(Order $order,Request $request): Response
     {
+        $page = $request->query->getInt('page', 1);
         $this->denyAccessUnlessGranted(CartItemVoter::DELETE, $order);
         return $this->render('order/detail.html.twig', [
-            'order' => $this->orderService->findOrder($order),
+            'ordersItems' => $this->orderService->paginatorOrderItem($order,$page),
         ]);
     }
 }

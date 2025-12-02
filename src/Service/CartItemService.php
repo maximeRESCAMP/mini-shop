@@ -10,6 +10,7 @@ use App\Exception\CartItem\CannotQueryCartItemException;
 use App\Exception\CartItem\CannotSaveCartItemException;
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 
 readonly class CartItemService
 {
@@ -25,6 +26,18 @@ readonly class CartItemService
         try {
             return $this->cartItemRepository->findBy(['user' => $user]);
 
+        } catch (\Throwable $exception) {
+            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+        }
+    }
+
+    /**
+     * @throws CannotQueryCartItemException
+     */
+    public function paginateProduct(User $user,$page, $limit=5): PaginationInterface
+    {
+        try {
+            return $this->cartItemRepository->paginateCartItem($user,$page,$limit);
         } catch (\Throwable $exception) {
             throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
         }
@@ -102,5 +115,12 @@ readonly class CartItemService
         $cartItem = new CartItem();
         return $cartItem->setQuantity($quantity);
     }
+
+    public function isProductInCartItem(Product $product): array
+    {
+        return $this->cartItemRepository->findBy(['product' => $product]);
+
+    }
+
 
 }

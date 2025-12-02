@@ -10,6 +10,7 @@ use App\Exception\Address\CannotQueryAddressException;
 use App\Exception\Address\CannotSaveAddressException;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 
 readonly class AddressService
 {
@@ -27,6 +28,10 @@ readonly class AddressService
         } catch (\Throwable $th) {
             throw new AddressUserNotFoundException(AddressUserNotFoundException::$userNotFound);
         }
+    }
+
+    public function paginateAddressByUser(User $user,int $page=1, int $limit=1): PaginationInterface{
+        return $this->addressRepository->paginateAddressByUser($user ,$page,$limit);
     }
 
     /**

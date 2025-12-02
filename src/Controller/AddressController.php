@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Address;
 use App\Entity\User;
 use App\Exception\Address\AddressAlreadyExistsException;
-use App\Exception\Address\AddressUserNotFoundException;
 use App\Exception\Address\CannotQueryAddressException;
 use App\Exception\Address\CannotSaveAddressException;
 use App\Form\AddressType;
@@ -26,14 +25,15 @@ final class AddressController extends AbstractController
     }
 
     /**
-     * @throws AddressUserNotFoundException
      */
     #[Route('', name: 'list', methods: ['GET'])]
-    public function index(#[CurrentUser] User $user): Response
+    public function index(#[CurrentUser] User $user, Request $request): Response
     {
+        $page = $request->query->getInt('page', 1);
         return $this->render('address/index.html.twig', [
-            'addresses' => $this->addressService->findByUser($user),
-            'nom_col' => ['Pays','Code Postal','Ville','Rue','Action'],
+            'addresses' => $this->addressService->paginateAddressByUser($user,$page),
+            'nom_col' => ['Pays', 'Code Postal', 'Ville', 'Rue', 'Action'],
+            'val_filter' => ['a.country', 'a.zipCode', 'a.city', 'a.street'],
         ]);
     }
 

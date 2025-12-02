@@ -20,11 +20,15 @@ final class AdminCategoryController extends AbstractController
     }
 
     #[Route('', name: 'list', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $page = $request->query->getInt('page', 1);
+
         return $this->render('admin_category/index.html.twig', [
-            'categories' => $this->adminCategoryService->findAll(),
+            'categories' => $this->adminCategoryService->paginateCategory($page),
             'nom_col' => ['Nom','Slug','Action'],
+            'val_filter' => ['c.name', 'c.slug'],
+
 
         ]);
     }
@@ -71,9 +75,10 @@ final class AdminCategoryController extends AbstractController
         return $this->redirectToRoute('app_admin_category_list');
     }
 
-    #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function update(Category $category, Request $request): Response
+    #[Route('/update/{slug}', name: 'update', methods: ['GET', 'POST'])]
+    public function update(string $slug, Request $request): Response
     {
+        $category = $this->adminCategoryService->findOneByCategory($slug);
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 

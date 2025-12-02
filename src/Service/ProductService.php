@@ -7,6 +7,7 @@ use App\Entity\Category;
 use App\Entity\Product;
 use App\Exception\Product\CannotFoundProductException;
 use App\Repository\ProductRepository;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 
 readonly class ProductService
 {
@@ -21,6 +22,24 @@ readonly class ProductService
     {
         try {
             return $this->productRepository->findAll();
+        } catch (\Throwable $exception) {
+            throw new CannotFoundProductException(CannotFoundProductException::$messageNotFound);
+        }
+    }
+
+    public function paginateProduct($page,$limit=5): PaginationInterface
+    {
+        try {
+            return $this->productRepository->paginateProduct($page,$limit);
+        } catch (\Throwable $exception) {
+            throw new CannotFoundProductException(CannotFoundProductException::$messageNotFound);
+        }
+    }
+
+    public function findBySLug(string $slug): Product
+    {
+        try {
+            return $this->productRepository->findOneBy(['slug' => $slug]);
         } catch (\Throwable $exception) {
             throw new CannotFoundProductException(CannotFoundProductException::$messageNotFound);
         }

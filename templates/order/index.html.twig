@@ -6,11 +6,11 @@
     {% embed 'partials/_list.html.twig' with {
         titre: 'des commandes',
         route_add: false,
-        nom_col: nom_col
+        nom_col: nom_col,
+        'datas':orders
+
     } %}
         {% block tableauDonnee %}
-
-
             {% for order in orders %}
                 <tr>
                     <td>{{ order.createdAt|date("d/m/Y") }}</td>

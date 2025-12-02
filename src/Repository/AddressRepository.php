@@ -3,17 +3,25 @@
 namespace App\Repository;
 
 use App\Entity\Address;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @extends ServiceEntityRepository<Address>
  */
 class AddressRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private readonly PaginatorInterface $paginator)
     {
         parent::__construct($registry, Address::class);
+    }
+
+    public function paginateAddressByUser(User $user,int $page, int $limit): PaginationInterface
+    {
+        return $this->paginator->paginate($this->createQueryBuilder('a')->andWhere('a.user=:user')->setParameter('user',$user),$page,$limit,[false,'sortFieldAllowList'=>['a.country','a.zipCode','a.city','a.street']]);
     }
 
 //    /**

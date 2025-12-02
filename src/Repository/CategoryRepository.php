@@ -3,17 +3,25 @@
 namespace App\Repository;
 
 use App\Entity\Category;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @extends ServiceEntityRepository<Category>
  */
 class CategoryRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private readonly PaginatorInterface $paginator)
     {
         parent::__construct($registry, Category::class);
+    }
+
+    public function paginateCategory(int $page, int $limit=10): PaginationInterface
+    {
+        return $this->paginator->paginate($this->createQueryBuilder('c'),$page,$limit,[false,'sortFieldAllowList'=>['c.slug','c.name']]);
     }
 
     //    /**

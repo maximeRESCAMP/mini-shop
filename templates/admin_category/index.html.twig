@@ -6,8 +6,9 @@
     {% embed 'partials/_list.html.twig' with {
         titre: 'des catégories',
         route_add: 'app_admin_category_add',
-        route_add_name: 'une catégorie',
-        nom_col: nom_col
+        nom_col: nom_col,
+        'datas':categories
+
     } %}
         {% block tableauDonnee %}
 
@@ -17,9 +18,9 @@
                     <td>{{ category.slug }}</td>
                     <td>
                         <a href="{{ path('app_admin_category_remove', parameters = {id:category.id}) }}"
-                           class="btn btn-danger mb-3"> Supprimer une catégorie </a>
-                        <a href="{{ path('app_admin_category_update', parameters = {id:category.id}) }}"
-                           class="btn btn-primary mb-3"> Modifier une catégorie </a>
+                           class="btn btn-danger mb-3">  <i class="bi bi-trash text-dark"></i></a>
+                        <a href="{{ path('app_admin_category_update', parameters = {slug:category.slug}) }}"
+                           class="btn btn-primary mb-3">   <i class="bi bi-pencil text-dark"></i></a>
                     </td>
                 </tr>
             {% endfor %}

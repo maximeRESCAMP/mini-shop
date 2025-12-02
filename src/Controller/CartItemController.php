@@ -13,6 +13,7 @@ use App\Service\CartItemService;
 use App\Service\ProductService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -28,11 +29,14 @@ final class CartItemController extends AbstractController
      * @throws CannotQueryCartItemException
      */
     #[Route('', name: 'list')]
-    public function index(#[CurrentUser] ?User $user): Response
+    public function index(#[CurrentUser] ?User $user,Request $request): Response
     {
+        $page = $request->query->getInt('page', 1);
+
         return $this->render('cart_item/index.html.twig', [
-            'cartItems' => $this->cartItemService->findByUser($user),
-            'nom_col'=> ['Image','Nom','Prix Unitaire','Quantité','Action']
+            'cartItems' => $this->cartItemService->paginateProduct($user,$page),
+            'nom_col'=> ['Image','Nom','Prix Unitaire','Quantité','Action'],
+            'val_filter' => [null,'p.name', 'p.price', 'ci.quantity',null],
         ]);
     }
 

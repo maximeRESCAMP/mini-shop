@@ -8,6 +8,7 @@ use App\Exception\Admin\Product\CannotSaveProductException;
 use App\Exception\Product\CannotFoundProductException;
 use App\Form\ProductType;
 use App\Service\AdminProductService;
+use App\Service\CartItemService;
 use App\Service\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/product', name: 'app_admin_product_')]
 class AdminProductController extends AbstractController
 {
-    public function __construct(private readonly AdminProductService $adminProductService, private readonly ProductService $productService)
+    public function __construct(private readonly AdminProductService $adminProductService, private readonly ProductService $productService, private CartItemService $cartItemService)
     {
     }
 
@@ -25,11 +26,14 @@ class AdminProductController extends AbstractController
      * @throws CannotFoundProductException
      */
     #[Route('', name: 'list', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $page = $request->query->getInt('page', 1);
         return $this->render('admin_product/index.html.twig', [
-            'products' => $this->productService->findAll(),
-            'nom_col'=> ['Image','Nom Catégorie','Nom Produit','Slug','Déscription','Prix','Stock','Action']
+            'products' => $this->productService->paginateProduct($page),
+            'nom_col' => ['Image', 'Nom Catégorie', 'Nom Produit', 'Slug', 'Déscription', 'Prix', 'Stock', 'Action'],
+            'val_filter' => [null,'c.name', 'p.name', 'p.slug', 'p.description', 'p.price', 'p.stock',null],
+
         ]);
     }
 
@@ -64,11 +68,20 @@ class AdminProductController extends AbstractController
     #[Route('/remove/{id}', name: 'remove', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function remove(Product $product): Response
     {
-        $this->adminProductService->remove($product);
-        $this->addFlash(
-            'success',
-            'Produit supprimmer!'
-        );
+        if ($this->cartItemService->isProductInCartItem($product)) {
+            $this->addFlash(
+                'danger',
+                'L\'article existe dans un panier!'
+            );
+        } else {
+            $this->adminProductService->remove($product);
+            $this->addFlash(
+                'success',
+                'Produit supprimmer!'
+            );
+        }
+
+
         return $this->redirectToRoute('app_admin_product_list');
     }
 
