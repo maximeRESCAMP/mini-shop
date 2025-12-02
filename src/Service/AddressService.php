@@ -9,12 +9,13 @@ use App\Exception\Address\AddressUserNotFoundException;
 use App\Exception\Address\CannotQueryAddressException;
 use App\Exception\Address\CannotSaveAddressException;
 use App\Repository\AddressRepository;
+use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
 readonly class AddressService
 {
-    public function __construct(private EntityManagerInterface $em, private AddressRepository $addressRepository)
+    public function __construct(private EntityManagerInterface $em, private AddressRepository $addressRepository, private OrderRepository $orderRepository)
     {
     }
 
@@ -30,8 +31,9 @@ readonly class AddressService
         }
     }
 
-    public function paginateAddressByUser(User $user,int $page=1, int $limit=1): PaginationInterface{
-        return $this->addressRepository->paginateAddressByUser($user ,$page,$limit);
+    public function paginateAddressByUser(User $user, int $page = 1, int $limit = 10): PaginationInterface
+    {
+        return $this->addressRepository->paginateAddressByUser($user, $page, $limit);
     }
 
     /**
@@ -73,10 +75,19 @@ readonly class AddressService
     /**
      * @throws CannotSaveAddressException
      */
-    public function dissociateAddressFromUser(Address $address): void
+    public function dissociateAddressFromUser(Address $address, User $user): void
     {
-        $address->setUser(null);
-        $this->save($address);
+        if (empty($this->orderRepository->findBy(['address' => $address]))) {
+            $user->removeAddress($address);
+            $this->em->remove($address);
+            $this->em->flush();
+        } else {
+            $address->setUser(null);
+            $this->save($address);
+
+        }
+
+
     }
 
     /**

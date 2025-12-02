@@ -99,7 +99,7 @@ final class AddressController extends AbstractController
     public function delete(Address $address, #[CurrentUser] ?User $user): Response
     {
         $this->denyAccessUnlessGranted(AddressVoter::DELETE, $address);
-        $this->addressService->dissociateAddressFromUser($address);
+        $this->addressService->dissociateAddressFromUser($address,$user);
         $this->addFlash(
             'success',
             'Supression de l\'adresse réussi!'
