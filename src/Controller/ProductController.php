@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Exception\CartItem\CannotQueryCartItemException;
 use App\Exception\CartItem\CannotSaveCartItemException;
 use App\Exception\Product\CannotFoundProductException;
+use App\Exception\Product\CannotQueryProductException;
 use App\Form\CartItemType;
 use App\Service\CartItemService;
 use App\Service\ProductService;
@@ -16,17 +17,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/product', name: 'app_product_')]
 final class ProductController extends AbstractController
 {
-    public function __construct(private readonly ProductService $productService, private readonly CartItemService $cartItemService)
+    public function __construct(private readonly ProductService $productService, private readonly CartItemService $cartItemService, private readonly TranslatorInterface $translator)
     {
     }
 
+
     /**
-     * @throws CannotFoundProductException
      * @throws CannotQueryCartItemException
+     * @throws CannotQueryProductException
      */
     #[Route('', name: 'list')]
     public function index(#[CurrentUser] ?User $user, Request $request): Response
@@ -36,7 +39,7 @@ final class ProductController extends AbstractController
         return $this->render('product/index.html.twig', [
             'products' => $this->productService->paginateProduct($page),
             'itemsCartOrder' => $this->cartItemService->findAllProductsByUser($user),
-            'nom_col' => ['Image', 'Catégorie', 'Produit', 'Prix', 'Action'],
+            'nom_col' => $this->productService->createColumnNoAdmin(),
             'val_filter' => [null, 'c.name', 'p.name', 'p.price', null],
         ]);
     }
@@ -44,7 +47,7 @@ final class ProductController extends AbstractController
     /**
      * @throws CannotQueryCartItemException
      * @throws CannotSaveCartItemException
-     * @throws CannotFoundProductException
+     * @throws CannotQueryProductException
      */
     #[Route('/detail/{slug}', name: 'detail')]
     public function detail(string $slug, Request $request, #[CurrentUser] ?User $user): Response
@@ -62,14 +65,14 @@ final class ProductController extends AbstractController
             $cartItem = $form->getData();
 
             if (!$this->productService->checkIfStockSupOrder($product, $cartItem)) {
-                $form->get('quantity')->addError(new FormError('Il n\'y plus que ' . $product->getStock() . ' produit(s) disponible(s).'));
+                $form->get('quantity')->addError(new FormError($this->translator->trans('product.form.error.not_all_product')));
             }
 
             if ($form->isValid()) {
                 $this->cartItemService->insertCartItem($user, $product, $cartItem);
                 $this->addFlash(
                     'success',
-                    'L\'article a été ajouté au panier !'
+                    $this->translator->trans('product.message.add_cart_item')
                 );
                 return $this->redirectToRoute('app_product_list');
 

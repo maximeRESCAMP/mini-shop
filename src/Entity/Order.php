@@ -31,16 +31,16 @@ class Order
     private ?User $user = null;
 
     #[ORM\Column(length: 50,unique: true, nullable: false)]
-    #[Assert\NotBlank(message: 'La référence ne peut pas être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'La réfference doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La réfference ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-z0-9-]{3,50}$/',
-        message: 'La référence ne doit contenir que des lettres, chiffres ou tirets (sans espace).'
+        message: 'error.order.reference.'
     )]
     private ?string $reference = null;
 
@@ -49,8 +49,8 @@ class Order
     private ?Address $address = null;
 
     #[ORM\Column]
-    #[Assert\Positive(message:'Le total doit être supérieur à 0')]
-    #[Assert\NotNull(message: 'Le total est obligatoire')]
+    #[Assert\Positive(message:'error.positive')]
+    #[Assert\NotNull(message: 'error.not_null')]
     private ?float $total = null;
 
     /**

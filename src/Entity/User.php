@@ -26,9 +26,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email(
-        message: 'L\'email {{ value }} n\'est pas valide',
+        message: 'error.email',
     )]
-    #[Assert\NotBlank(message: 'L\'email est obligatoire')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     private ?string $email = null;
 
     /**
@@ -41,47 +41,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Le mots de passe ne peut pa être vide')]
-    #[Assert\NotCompromisedPassword(message: 'Mot de passe compromis ')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
+    #[Assert\NotCompromisedPassword(message: 'error.password.compromise')]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Le prénom ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'La prénom doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La prénom ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
-        message: 'Le prénom  ne doit contenir que des lettres, espaces, tirets, apostrophe'
+        message: 'error.regex.user.first_name'
     )]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Le nom de famille ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'La nom de famille doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La nom de famille ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
-        message: 'Le champ  ne doit contenir que des lettres, espaces, tirets, apostrophe'
+        message: 'error.regex.user.last_name'
     )]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 15)]
-    #[Assert\NotBlank(message: 'Le téléphone ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Regex(
         pattern: '/^(?:\+33|0)[1-9](\d{2}){4}$/',
-        message: 'Format de numéro invalide'
+        message: 'error.tel.invalid'
     )]
     #[Assert\Length(
         max: 15,
-        maxMessage: 'Le numéro ne peut pas dépasser {{ limit }} caractères'
+        maxMessage: 'error.max_length'
     )]
     private ?string $phone = null;
 
@@ -101,6 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Address>
      */
     #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'user', cascade: ['persist'] )]
+    #[Assert\Valid]
     private Collection $addresses;
 
     use TimestampableTrait;

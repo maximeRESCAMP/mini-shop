@@ -19,42 +19,43 @@ class Address
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
+    #[Assert\Country]
     private ?string $country = null;
 
     #[ORM\Column(length: 5)]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Regex(
         pattern: '/^\d{5}$/',
-        message: 'Le champ  ne doit contenir que des chiffres'
+        message: 'error.regex.address.zip_code'
     )]
     private ?string $zipCode = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Ce champ ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'La ville doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La ville ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
-        message: 'Le champ  ne doit contenir que des lettre ou espace - ou bien \''
+        message: 'error.regex.address.city'
     )]
     private ?string $city = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'Ce champ  ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'La rue doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La rue ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ0-9\' ,.’-]{3,50}$/',
-        message: 'Le champ  ne doit contenir que des lettre chiffre ou espace tirer virgule ou bien \''
+        message: 'error.regex.address.street'
     )]
     private ?string $street = null;
 
@@ -126,6 +127,17 @@ class Address
         $this->user = $User;
 
         return $this;
+    }
+    public function trans(TranslatorInterface $translator, ?string $locale = null): string
+    {
+        $parameters = $this->getParameters();
+        foreach ($parameters as $k => $v) {
+            if ($v instanceof TranslatableInterface) {
+                $parameters[$k] = $v->trans($translator, $locale);
+            }
+        }
+
+        return $translator->trans($this->getMessage(), $parameters, $this->getDomain(), $locale);
     }
 
 }

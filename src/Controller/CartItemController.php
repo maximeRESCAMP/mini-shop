@@ -11,17 +11,17 @@ use App\Exception\CartItem\CannotSaveCartItemException;
 use App\Security\CartItemVoter;
 use App\Service\CartItemService;
 use App\Service\ProductService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/cart/item', name: 'app_cart_item_')]
 final class CartItemController extends AbstractController
 {
-    public function __construct(private readonly CartItemService $cartItemService, private readonly ProductService $productService)
+    public function __construct(private readonly CartItemService $cartItemService, private readonly ProductService $productService, private readonly TranslatorInterface $translator)
     {
     }
 
@@ -35,7 +35,7 @@ final class CartItemController extends AbstractController
 
         return $this->render('cart_item/index.html.twig', [
             'cartItems' => $this->cartItemService->paginateProduct($user,$page),
-            'nom_col'=> ['Image','Nom','Prix Unitaire','Quantité','Action'],
+            'nom_col' => $this->cartItemService->createColumn(),
             'val_filter' => [null,'p.name', 'p.price', 'ci.quantity',null],
         ]);
     }
@@ -50,13 +50,13 @@ final class CartItemController extends AbstractController
         if ($isRupture) {
             $this->addFlash(
                 'danger',
-                'Plus de stock pour cette article !'
+                $this->translator->trans('cart_item.message.no_stock.danger')
             );
         } else {
             $this->cartItemService->insertCartItem($user, $product,$this->cartItemService->setQuantity());
             $this->addFlash(
                 'success',
-                'L\'article a été ajouté au panier !'
+                $this->translator->trans('cart_item.message.add.success')
             );
         }
         return $this->redirectToRoute('app_product_list');
@@ -75,7 +75,7 @@ final class CartItemController extends AbstractController
         $cartItemService->removeCartItem($cartItem);
         $this->addFlash(
             'success',
-            'L\'article a été supprimé du panier !'
+            $this->translator->trans('cart_item.message.delete.success')
         );
         return $this->redirectToRoute('app_product_list');
     }
@@ -90,7 +90,7 @@ final class CartItemController extends AbstractController
         $cartItemService->removeCartItem($cartItem);
         $this->addFlash(
             'success',
-            'L\'article a été supprimé du panier !'
+            $this->translator->trans('cart_item.message.delete.success')
         );
         return $this->redirectToRoute('app_cart_item_list');
     }

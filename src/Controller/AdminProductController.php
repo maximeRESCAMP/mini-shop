@@ -5,7 +5,8 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Exception\Admin\Product\CannotDeleteProductException;
 use App\Exception\Admin\Product\CannotSaveProductException;
-use App\Exception\Product\CannotFoundProductException;
+use App\Exception\CartItem\CannotQueryCartItemException;
+use App\Exception\Product\CannotQueryProductException;
 use App\Form\ProductType;
 use App\Service\AdminProductService;
 use App\Service\CartItemService;
@@ -14,16 +15,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/product', name: 'app_admin_product_')]
 class AdminProductController extends AbstractController
 {
-    public function __construct(private readonly AdminProductService $adminProductService, private readonly ProductService $productService, private CartItemService $cartItemService)
+    public function __construct(private readonly AdminProductService $adminProductService, private readonly ProductService $productService, private readonly CartItemService $cartItemService, private readonly TranslatorInterface $translator)
     {
     }
 
+
     /**
-     * @throws CannotFoundProductException
+     * @throws CannotQueryProductException
      */
     #[Route('', name: 'list', methods: ['GET'])]
     public function index(Request $request): Response
@@ -31,7 +34,7 @@ class AdminProductController extends AbstractController
         $page = $request->query->getInt('page', 1);
         return $this->render('admin_product/index.html.twig', [
             'products' => $this->productService->paginateProduct($page),
-            'nom_col' => ['Image', 'Nom Catégorie', 'Nom Produit', 'Slug', 'Déscription', 'Prix', 'Stock', 'Action'],
+            'nom_col' => $this->productService->createColumn(),
             'val_filter' => [null,'c.name', 'p.name', 'p.slug', 'p.description', 'p.price', 'p.stock',null],
 
         ]);
@@ -51,7 +54,7 @@ class AdminProductController extends AbstractController
             $this->adminProductService->save($product);
             $this->addFlash(
                 'success',
-                'Ajout du produits réussi!'
+                $this->translator->trans('product.message.add.success')
             );
             return $this->redirectToRoute('app_admin_product_list');
         }
@@ -64,6 +67,7 @@ class AdminProductController extends AbstractController
 
     /**
      * @throws CannotDeleteProductException
+     * @throws CannotQueryCartItemException
      */
     #[Route('/remove/{id}', name: 'remove', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function remove(Product $product): Response
@@ -71,13 +75,13 @@ class AdminProductController extends AbstractController
         if ($this->cartItemService->isProductInCartItem($product)) {
             $this->addFlash(
                 'danger',
-                'L\'article existe dans un panier!'
+                $this->translator->trans('cart_item.message.delete.danger')
             );
         } else {
             $this->adminProductService->remove($product);
             $this->addFlash(
                 'success',
-                'Produit supprimmer!'
+                $this->translator->trans('product.message.remove.success')
             );
         }
 
@@ -99,7 +103,8 @@ class AdminProductController extends AbstractController
             $this->adminProductService->save($product);
             $this->addFlash(
                 'success',
-                'Modification de la catégorie réussi!'
+                $this->translator->trans('product.message.update.success')
+
             );
             return $this->redirectToRoute('app_admin_product_list');
         }

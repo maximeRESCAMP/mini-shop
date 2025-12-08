@@ -10,10 +10,11 @@ use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class OrderService
 {
-    public function __construct(private OrderRepository $orderRepository, private OrderItemRepository $orderItemRepository)
+    public function __construct(private OrderRepository $orderRepository, private OrderItemRepository $orderItemRepository, private readonly TranslatorInterface $translator)
     {
     }
 
@@ -26,7 +27,7 @@ readonly class OrderService
             return $this->orderRepository->findBy(['user' => $user]);
 
         } catch (\Throwable $exception) {
-            throw new CannotQueryOrderException(CannotQueryOrderException::$messageQuerry);
+            throw new CannotQueryOrderException($this->translator->trans(CannotQueryOrderException::$messageQuerry));
         }
     }
 
@@ -39,22 +40,15 @@ readonly class OrderService
             return $this->orderRepository->paginateOrder($user, $page, $offset);
 
         } catch (\Throwable $exception) {
-            throw new CannotQueryOrderException(CannotQueryOrderException::$messageQuerry);
+            throw new CannotQueryOrderException($this->translator->trans(CannotQueryOrderException::$messageQuerry));
         }
     }
 
-    /**
-     * @throws CannotQueryOrderException
-     */
-    public function findOrder(Order $order): Order
-    {
-        try {
-            return $this->orderRepository->findOneBy(['id' => $order->getId()]);
-
-        } catch (\Throwable $exception) {
-            throw new CannotQueryOrderException(CannotQueryOrderException::$messageQuerry);
-        }
+    public function createColumn():array{
+        $tabColumn =["created_at","reference","address","total","status"];
+        return array_map(fn($column)=>$this->translator->trans('order.list.column.'.$column),$tabColumn);
     }
+
 
     /**
      * @throws CannotQueryOrderException
@@ -63,10 +57,8 @@ readonly class OrderService
     {
         try {
             return $this->orderItemRepository->paginateOrderItem($order, $page, $limit);
-
         } catch (\Throwable $exception) {
-            dd($exception->getMessage());
-            throw new CannotQueryOrderException(CannotQueryOrderException::$messageQuerry);
+            throw new CannotQueryOrderException($this->translator->trans(CannotQueryOrderException::$messageQuerry));
         }
     }
 

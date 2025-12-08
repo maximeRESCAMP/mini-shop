@@ -9,13 +9,16 @@ use App\Exception\CodeNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class OrderVoter extends Voter
 {
     const EDIT = 'edit';
     const VIEW = 'view';
     const DELETE = 'delete';
-
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
     protected function supports(string $attribute, mixed $subject): bool
     {
         if (!in_array($attribute, [self::EDIT, self::DELETE, self::VIEW])) {
@@ -34,7 +37,7 @@ class OrderVoter extends Voter
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
-            $vote?->addReason('L\'utilisateur n\'est pas connecté');
+            $vote?->addReason($this->translator->trans('voter.user.not_login'));
             return false;
         }
         $order = $subject;
@@ -50,9 +53,8 @@ class OrderVoter extends Voter
         if ($user === $order->getUser()) {
             return true;
         }
-        $vote->addReason(sprintf(
-            'Le login de l\'utilisateur (email: %s) n\'est pas l\'auteur du poste (id: %d).', $user->getEmail(), $order->getId()
-        ));
+        $vote->addReason($this->translator->trans('vote.not_author',['%email%'=>$user->getEmail(),'%id%'=>$order->getId()]));
+
         return false;
     }
 

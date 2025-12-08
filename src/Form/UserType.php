@@ -13,15 +13,21 @@ use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserType extends AbstractType
 {
+
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email',
                 EmailType::class, [
-                    'label' => 'Email',
+                    'label' => $this->translator->trans('user.form.email'),
                     'attr' => [
                         'placeholder' => 'prenom.nom@hotmail.fr',
                         'class' => 'form-control',
@@ -31,19 +37,18 @@ class UserType extends AbstractType
                     ]])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'mapped' => false,
                 'invalid_message' => 'Les mots de passe doivent correspondre.',
                 'first_options' => [
-                    'label' => 'Mot de passe',
+                    'label' => $this->translator->trans('user.form.password'),
                     'attr' => ['class' => 'form-control'],
                 ],
                 'second_options' => [
-                    'label' => 'Confirmez le mot de passe',
+                    'label' => $this->translator->trans('user.form.confirm_password'),
                     'attr' => ['class' => 'form-control'],
                 ]
             ])
             ->add('firstName', TextType::class, [
-                'label' => 'Prénom',
+                'label' => $this->translator->trans('user.form.first_name'),
                 'attr' => [
                     'placeholder' => 'Jean',
                     'class' => 'form-control',
@@ -51,14 +56,14 @@ class UserType extends AbstractType
                 ]
             ])
             ->add('lastName', TextType::class, [
-                'label' => 'Nom',
+                'label' => $this->translator->trans('user.form.last_name'),
                 'attr' => [
                     'placeholder' => 'DUBOIS',
                     'class' => 'form-control',
                     'inputmode' => 'text',
                 ]])
             ->add('phone', TelType::class, [
-                'label' => 'Télephone',
+                'label' => $this->translator->trans('user.form.phone'),
                 'attr' => [
                     'placeholder' => '0620458545',
                     'class' => 'form-control',
@@ -72,7 +77,7 @@ class UserType extends AbstractType
                 ],
             ])
             ->add('save', SubmitType::class, [
-                'label' => 'Valider',
+                'label' => $this->translator->trans('user.form.save'),
                 'attr' => [
                     'class' => 'btn btn-primary w-100'
                 ]

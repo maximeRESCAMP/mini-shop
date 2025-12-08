@@ -11,14 +11,14 @@
                 {% if is_granted('ROLE_ADMIN') %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-tools"></i> Administration
+                            <i class="bi bi-tools"></i> {{ 'navbar.administration' | trans }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="{{ path('app_admin_category_list') }}">Liste des catégories</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_admin_category_add') }}">Créer une catégorie</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_admin_category_list') }}">{{ 'navbar.list_category' | trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_admin_category_add') }}">{{ 'navbar.create_category' | trans }}</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ path('app_admin_product_list') }}">Liste des produits</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_admin_product_add') }}">Créer un produit</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_admin_product_list') }}">{{ 'navbar.list_product' | trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_admin_product_add') }}">{{ 'navbar.create_product' | trans }}</a></li>
                         </ul>
                     </li>
                 {% endif %}
@@ -26,37 +26,37 @@
                 {% if app.user %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i> Mon compte
+                            <i class="bi bi-person-circle"></i> {{ 'navbar.my_account' | trans }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="{{ path('app_address_list') }}">Mes adresses</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_address_add') }}">Ajouter une adresse</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_cart_item_list') }}">Mon panier</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_order_list') }}">Mes commandes</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_address_list') }}">{{ 'navbar.my_addresses' | trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_address_add') }}">{{ 'navbar.create_address' | trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_cart_item_list') }}">{{ 'navbar.my_cart' | trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_order_list') }}">{{ 'navbar.my_orders' | trans }}</a></li>
                         </ul>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_product_list') }}">
-                            <i class="bi bi-box"></i> Produits
+                            <i class="bi bi-box"></i> {{ 'navbar.product' | trans }}
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link text-danger" href="{{ path('app_logout') }}">
-                            <i class="bi bi-box-arrow-right"></i> Se déconnecter
+                            <i class="bi bi-box-arrow-right"></i> {{ 'navbar.logout' | trans }}
                         </a>
                     </li>
 
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_login') }}">
-                            <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                            <i class="bi bi-box-arrow-in-right"></i> {{ 'navbar.login' | trans }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_register') }}">
-                            <i class="bi bi-pencil-square"></i> S'inscrire
+                            <i class="bi bi-pencil-square"></i> {{ 'navbar.register' | trans }}
                         </a>
                     </li>
                 {% endif %}

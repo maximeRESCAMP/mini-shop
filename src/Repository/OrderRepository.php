@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -18,7 +19,7 @@ class OrderRepository extends ServiceEntityRepository
         parent::__construct($registry, Order::class);
     }
 
-    public function paginateOrder(int $page, int $limit=10): PaginationInterface
+    public function paginateOrder(User $user,int $page, int $limit=10): PaginationInterface
     {
         return $this->paginator->paginate($this->createQueryBuilder('o')->innerJoin('o.address','a')->andWhere('o.user = :user')->setParameter('user',$user),$page,$limit,[false,'sortFieldAllowList'=>['o.createdAt', 'o.reference', 'a.city', 'o.total','o.status']]);
     }

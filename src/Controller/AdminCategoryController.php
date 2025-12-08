@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Category;
-use App\Exception\Product\CannotFoundProductException;
+use App\Exception\Admin\Category\CannotDeleteCategoryException;
+use App\Exception\Admin\Category\CannotQueryCategoryException;
+use App\Exception\Admin\Category\CannotSaveCategoryException;
+use App\Exception\Product\CannotQueryProductException;
 use App\Form\CategoryType;
 use App\Service\AdminCategoryService;
 use App\Service\ProductService;
@@ -11,14 +14,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/admin/category', name: 'app_admin_category_')]
 final class AdminCategoryController extends AbstractController
 {
-    public function __construct(private readonly AdminCategoryService $adminCategoryService, private readonly ProductService $productService)
+    public function __construct(private readonly AdminCategoryService $adminCategoryService, private readonly ProductService $productService, private TranslatorInterface $translator)
     {
     }
 
+    /**
+     * @throws CannotQueryCategoryException
+     */
     #[Route('', name: 'list', methods: ['GET'])]
     public function index(Request $request): Response
     {
@@ -26,13 +33,14 @@ final class AdminCategoryController extends AbstractController
 
         return $this->render('admin_category/index.html.twig', [
             'categories' => $this->adminCategoryService->paginateCategory($page),
-            'nom_col' => ['Nom','Slug','Action'],
-            'val_filter' => ['c.name', 'c.slug'],
-
-
+            'nom_col' => $this->adminCategoryService->createColumn(),
+            'val_filter' => ['c.name', 'c.slug', null],
         ]);
     }
 
+    /**
+     * @throws CannotSaveCategoryException
+     */
     #[Route('/add', name: 'add')]
     public function create(Request $request): Response
     {
@@ -44,7 +52,7 @@ final class AdminCategoryController extends AbstractController
             $this->adminCategoryService->save($category);
             $this->addFlash(
                 'success',
-                'Ajout de la catégorie réussi!'
+                $this->translator->trans('category.message.add.success')
             );
             return $this->redirectToRoute('app_admin_category_list');
         }
@@ -55,7 +63,8 @@ final class AdminCategoryController extends AbstractController
     }
 
     /**
-     * @throws CannotFoundProductException
+     * @throws CannotQueryProductException
+     * @throws CannotDeleteCategoryException
      */
     #[Route('/remove/{id}', name: 'remove', requirements: ['id' => '\d+'], methods: ['POST', 'GET'])]
     public function remove(Category $category): Response
@@ -63,18 +72,22 @@ final class AdminCategoryController extends AbstractController
         if (!is_null($this->productService->findOneByCategory($category))) {
             $this->addFlash(
                 'danger',
-                'Des produits sont associer à cette catégorie veuiller supprimer les produits d\'abbord!'
+                $this->translator->trans('product.error.product_associate_category')
             );
         } else {
             $this->adminCategoryService->remove($category);
             $this->addFlash(
                 'success',
-                'Catégorie supprimmer!'
+                $this->translator->trans('category.message.delete.success')
             );
         }
         return $this->redirectToRoute('app_admin_category_list');
     }
 
+    /**
+     * @throws CannotQueryCategoryException
+     * @throws CannotSaveCategoryException
+     */
     #[Route('/update/{slug}', name: 'update', methods: ['GET', 'POST'])]
     public function update(string $slug, Request $request): Response
     {
@@ -84,19 +97,11 @@ final class AdminCategoryController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $category = $form->getData();
-            try {
-                $this->adminCategoryService->save($category);
-                $this->addFlash(
-                    'success',
-                    'Modification réussi!'
-                );
-            } catch (\Throwable $exception) {
-                $this->addFlash(
-                    'danger',
-                    'Erreur lors de la modification de la categorie!'
-                );
-            }
-
+            $this->adminCategoryService->save($category);
+            $this->addFlash(
+                'success',
+                $this->translator->trans('category.message.update.success')
+            );
             return $this->redirectToRoute('app_admin_category_list');
         }
         return $this->render('admin_category/form.html.twig', [

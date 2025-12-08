@@ -11,24 +11,12 @@ use App\Exception\CartItem\CannotSaveCartItemException;
 use App\Repository\CartItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class CartItemService
 {
-    public function __construct(private EntityManagerInterface $em, private CartItemRepository $cartItemRepository)
+    public function __construct(private EntityManagerInterface $em, private CartItemRepository $cartItemRepository, private readonly TranslatorInterface $translator)
     {
-    }
-
-    /**
-     * @throws CannotQueryCartItemException
-     */
-    public function findByUser(User $user): array
-    {
-        try {
-            return $this->cartItemRepository->findBy(['user' => $user]);
-
-        } catch (\Throwable $exception) {
-            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
-        }
     }
 
     /**
@@ -39,8 +27,12 @@ readonly class CartItemService
         try {
             return $this->cartItemRepository->paginateCartItem($user,$page,$limit);
         } catch (\Throwable $exception) {
-            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+            throw new CannotQueryCartItemException($this->translator->trans(CannotQueryCartItemException::$messageQuerry));
         }
+    }
+    public function createColumn():array{
+        $tabColumn =['picture','name','unit_price','quantity','action'];
+        return array_map(fn($column)=>$this->translator->trans('cart_item.list.column.'.$column),$tabColumn);
     }
 
     /**
@@ -51,7 +43,7 @@ readonly class CartItemService
         try {
             return $this->cartItemRepository->findOneBy(['user' => $user, 'product' => $product]);
         } catch (\Throwable $exception) {
-            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+            throw new CannotQueryCartItemException($this->translator->trans(CannotQueryCartItemException::$messageQuerry));
         }
     }
 
@@ -63,7 +55,7 @@ readonly class CartItemService
         try {
             return $this->cartItemRepository->findProductIdsByUser($user);
         } catch (\Throwable $exception) {
-            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+            throw new CannotQueryCartItemException($this->translator->trans(CannotQueryCartItemException::$messageQuerry));
         }
     }
 
@@ -75,7 +67,7 @@ readonly class CartItemService
         try {
             return $this->cartItemRepository->findOneBy(['product' => $product, 'user' => $user]);
         } catch (\Throwable $exception) {
-            throw new CannotQueryCartItemException(CannotQueryCartItemException::$messageQuerry);
+            throw new CannotQueryCartItemException($this->translator->trans(CannotQueryCartItemException::$messageQuerry));
         }
     }
 
@@ -90,7 +82,7 @@ readonly class CartItemService
             $this->em->persist($cartItem);
             $this->em->flush();
         } catch (\Throwable $exception) {
-            throw new CannotSaveCartItemException(CannotSaveCartItemException::$messageSave);
+            throw new CannotSaveCartItemException($this->translator->trans(CannotSaveCartItemException::$messageSave));
         }
 
     }
@@ -104,7 +96,7 @@ readonly class CartItemService
             $this->em->remove($cartItem);
             $this->em->flush();
         } catch (\Throwable $exception) {
-            throw new CannotDeleteCartItemException(CannotDeleteCartItemException::$messageDelete);
+            throw new CannotDeleteCartItemException($this->translator->trans(CannotDeleteCartItemException::$messageDelete));
         }
 
     }
@@ -116,9 +108,16 @@ readonly class CartItemService
         return $cartItem->setQuantity($quantity);
     }
 
+    /**
+     * @throws CannotQueryCartItemException
+     */
     public function isProductInCartItem(Product $product): array
     {
-        return $this->cartItemRepository->findBy(['product' => $product]);
+        try {
+            return $this->cartItemRepository->findBy(['product' => $product]);
+        }catch (\Throwable $exception) {
+            throw new CannotQueryCartItemException($this->translator->trans(CannotQueryCartItemException::$messageQuerry));
+        }
 
     }
 

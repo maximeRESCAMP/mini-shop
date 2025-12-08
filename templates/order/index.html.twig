@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Commandes{% endblock %}
+{% block title %}{{ 'order.address.list.title'| trans }}{% endblock %}
+
 
 {% block body %}
     {% embed 'partials/_list.html.twig' with {
-        titre: 'des commandes',
+        titre: 'order.address.list.title',
         route_add: false,
         nom_col: nom_col,
         'datas':orders
@@ -17,7 +18,7 @@
                     <td>
                         <a href="{{ path('app_order_detail_order', parameters = {id:order.id}) }}">{{ order.reference }}</a>
                     </td>
-                    <td>{{ order.address.country ~' '~ order.address.zipCode ~' '~ order.address.city ~' '~order.address.street ~' ' }}</td>
+                    <td>{{ order.address.country|country_name(app.request.locale) ~' '~ order.address.zipCode ~' '~ order.address.city ~' '~order.address.street ~' ' }}</td>
                     <td>{{ order.total | round(2,'common') }}</td>
                     <td>{{ order.status.value }}</td>
                 </tr>

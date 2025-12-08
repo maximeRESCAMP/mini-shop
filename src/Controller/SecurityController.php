@@ -4,19 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Address;
 use App\Entity\User;
-use App\Form\RegisterType;
 use App\Form\UserType;
 use App\Service\UserService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    public function __construct(private UserService $userService)
+    public function __construct(private readonly UserService $userService, private readonly UserPasswordHasherInterface $passwordHasher)
     {
     }
 
@@ -50,10 +49,14 @@ class SecurityController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()&& $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
+            $plainPassword = $form->get('password')->get('first')->getData();
+            $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
             $this->userService->insertUser($user);
             return $this->redirectToRoute('app_login');
+
         }
 
         return $this->render('security/register.html.twig', [

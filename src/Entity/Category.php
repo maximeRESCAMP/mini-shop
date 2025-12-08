@@ -25,22 +25,22 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 50, unique: true)]
-    #[Assert\NotBlank(message: 'Le nom de la catégorie ne peut pas être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Regex(
         pattern: '/^[A-Za-zÀ-ÖØ-öø-ÿ\' -]{3,50}$/',
-        message: 'Le nom de la catégorie doit contenir uniquement des lettres, espaces, tirets ou apostrophes (3 à 50 caractères).'
+        message: 'error.regex.category.name'
     )]
     private ?string $name = null;
 
     #[ORM\Column(length: 50,unique: true)]
-    #[Assert\NotBlank(message: 'Le slug ne peut pas être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'Le nom du slug doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'Le nom du slug ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
-    #[Assert\Regex('/^[a-z0-9-]+$/', message: 'Le slug ne doit contenir que des lettres minuscules, chiffres et tirets.')]
+    #[Assert\Regex('/^[a-z0-9-]+$/', message: 'error.regex.slug')]
     private ?string $slug = null;
 
     /**

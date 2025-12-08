@@ -1,14 +1,19 @@
 {% extends 'base.html.twig' %}
 {% if is_update %}
-    {% set createOrUpdate = 'Modifier' %}
+    {% set createOrUpdate = 'form.update' %}
+    {% set title = 'delivery.address.form.title.update' %}
+
 {% else %}
-    {% set createOrUpdate = 'Créer' %}
+    {% set createOrUpdate = 'form.create' %}
+    {% set title = 'delivery.address.form.title.create' %}
+
+
 {% endif %}
-{% block title %} {{ createOrUpdate }} une adresse de livraison{% endblock %}
+{% block title %} {{ title | trans}}{% endblock %}
 
 {% block body %}
     {% embed 'partials/_form.html.twig' with {
-        name: 'une adresse de livraison',
+        title: title,
         createUpdate: createOrUpdate,
     } %}
 
@@ -31,12 +36,11 @@
                     {{ form_row(form.street) }}
                 </div>
                 <div>
-                    <button class="btn btn-primary w-100"> {{ createOrUpdate }}</button>
+                    <button class="btn btn-primary w-100"> {{ createOrUpdate |trans }}</button>
                 </div>
             </div>
             {{ form_end(form) }}
 
         {% endblock %}
     {% endembed %}
-
 {% endblock %}

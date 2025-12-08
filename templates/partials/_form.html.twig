@@ -1,13 +1,8 @@
-{% if is_update %}
-    {% set createOrUpdate = 'Modifier' %}
-{% else %}
-    {% set createOrUpdate = 'Créer' %}
-{% endif %}
 <div class="container py-5">
     <div>
         <div class="col-lg-10 col-md-12 mx-auto">
             <div class="p-4 bg-white shadow rounded">
-                <h1 class="text-center mb-4">{{ createOrUpdate ~' '~ name }}</h1>
+                <h1 class="text-center mb-4">{{ title | trans }}</h1>
                 {% block form %} {% endblock %}
             </div>
         </div>

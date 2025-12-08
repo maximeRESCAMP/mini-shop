@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Panier{% endblock %}
+{% block title %}{{ 'cart_item.list.title'| trans }}{% endblock %}
+
 
 {% block body %}
     {% embed 'partials/_list.html.twig' with {
-        titre: 'des articles de votre panier',
+        titre: 'cart_item.list.title',
         route_add: false,
         nom_col: nom_col,
         'datas':cartItems

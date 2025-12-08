@@ -6,5 +6,5 @@ use Exception;
 
 class AddressAlreadyExistsException extends Exception
 {
-    public static string $addressAlready = 'Adresse déja éxistante';
+    public static string $addressAlready = 'delivery.address.exception.already_exist';
 }

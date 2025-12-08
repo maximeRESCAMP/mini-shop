@@ -23,8 +23,8 @@ class OrderItem
     private ?Product $product = null;
 
     #[ORM\Column]
-    #[Assert\Positive(message:'La quantité doit être supérieur à 0')]
-    #[Assert\NotNull(message: 'La quantité est obligatoire')]
+    #[Assert\Positive(message:'error.positive')]
+    #[Assert\NotNull(message: 'error.not_null')]
     private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderItems')]

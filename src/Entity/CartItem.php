@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[UniqueEntity(
     fields: ['user', 'product'],
-    message: 'Ce produit est déjà dans votre panier'
+    message: 'error.product.already_exist'
 )]
 #[ORM\HasLifecycleCallbacks]
 class CartItem
@@ -38,11 +38,11 @@ class CartItem
     private ?Product $product = null;
 
     #[ORM\Column]
-    #[Assert\Positive(message: 'La valeur doit être supérieur a 0')]
-    #[Assert\Type(type: 'integer', message: 'La quantité doit être un nombre entier')]
+    #[Assert\Positive(message: 'error.positive')]
+    #[Assert\Type(type: 'integer', message: 'error.type.integer')]
     #[Assert\LessThanOrEqual(
         value: 10000,
-        message: 'La quantité ne peut pas dépasser {{ compared_value }}'
+        message: 'error.less.than.or.equal'
     )]
     private ?int $quantity = 1;
 

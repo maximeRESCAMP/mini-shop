@@ -1,0 +1,216 @@
+#list
+#list generic
+list.add: Ajouter
+
+#form
+#form generic
+form.create: Créer
+form.update: Modifier
+
+general.exception.not_found: Le code n'as pas plus être trouvé
+general.form.validate: Validé
+
+#delivery.address.exception
+delivery.address.exception.query: Une erreur  est survenue lors de la récuprération des adresses
+delivery.address.exception.already_exist: Adresse déja existante
+delivery.address.exception.save: Erreur lors de la sauvegarde de l'adresse
+
+#delivery address list column
+delivery.address.list.column.country: Pays
+delivery.address.list.column.zip_code: Code Postal
+delivery.address.list.column.city: Ville
+delivery.address.list.column.street: Rue
+delivery.address.list.column.action: Action
+
+#delivery address
+delivery.address.list.title: Liste de mes adresses de Livraison
+
+#delivery address form
+delivery.address.form.country: Pays
+delivery.address.form.zip_code: Code Postal
+delivery.address.form.city: Ville
+delivery.address.form.street: Rue
+
+#form delivery address title
+delivery.address.form.title.create: 'Créer une adresse de livraison'
+delivery.address.form.title.update: 'Modifier une adresse de livraison'
+
+#delivery address  message
+delivery.address.message.add.success: Ajout de l'adreese réussi
+delivery.address.message.update.success: Modification de l'adresse réussi
+delivery.address.message.delete.success: Supression de l'adresse réussi!
+
+
+#category
+#category exception
+category.exception.query: Une erreur  est survenue lors de la récuprération de la categorie
+category.exception.save: Une erreur  est survenue lors de l'enregistrement de la categorie
+category.exception.delete: Une erreur  est survenue lors de la supression de la categorie
+
+#category list
+category.list.title: Liste des catégories
+
+#category list column
+category.list.column.name: Nom
+category.list.column.slug: Slug
+category.list.column.action: Action
+
+#category form name
+category.form.name: Nom
+category.form.slug: Slug
+
+#form category title
+category.form.title.create: Créer une Catégorie
+category.form.title.update: Modifier une Catégorie
+
+#category message
+category.message.add.success: Ajout de la catégorie réussi!
+category.message.delete.success: Catégorie supprimmer!
+category.message.update.success: Modification réussi!
+
+
+#product
+#product exception
+product.exception.query: Une erreur  est survenue lors de la récupération des produits
+product.exception.save: Une erreur  est survenue lors de la supression du produit
+
+#product
+#product error
+product.error.product_associate_category: Des produits sont associer à cette catégorie veuiller supprimer les produits d'abbord!
+product.error.save: Une erreur  est survenue lors de la sauvegarde du produit
+
+#product detail
+product.list.detail: Détail du produit
+product.list.category: Categorie
+product.list.price: Prix
+product.list.description: Déscription
+product.list.delete_item_cart: Supprimer du pannier
+product.list.not_stock: Plus de stock
+
+#product list
+product.list.title: Liste des produits
+
+#product list column
+product.list.column.picture: Image
+product.list.column.category_name: Nom Catégorie
+product.list.column.product_name: Nom Produit
+product.list.column.slug: Slug
+product.list.column.description: Déscription
+product.list.column.price: Prix
+product.list.column.stock: Stock
+product.list.column.action: Action
+
+#product list
+product.list.not_in_stock: Plus de stock
+
+# product form
+product.form.product_name: Nom du produit
+product.form.slug: Slug
+product.form.description: Déscription
+product.form.price: Prix
+product.form.stock: Stock
+product.form.picture: Image
+product.form.category: Nom Catégorie
+
+#produt form error
+product.form.error.not_all_product: Il n'y plus assez de produit(s) disponible(s).
+
+#product  message
+product.message.add.success: Ajout du produits réussi!
+product.message.remove.success: Produit supprimmer!
+product.message.update.success: Modification du produit réussi!
+product.message.add_cart_item: L'article a été ajouté au panier !
+
+#form product title
+product.form.title.create: Créer un produit
+product.form.title.update: Modifier un produit
+
+#cartItem
+#cartItem form
+cart_item.form.quantity: Quantité
+
+#cart item list column
+cart_item.list.column.picture: Image
+cart_item.list.column.name: Nom
+cart_item.list.column.unit_price: Prix unitaire
+cart_item.list.column.quantity: Quantité
+cart_item.list.column.action: Action
+
+#cartitem list title
+cart_item.list.title: Panier
+
+
+#cartim exception
+cart_item.exception.query: Une erreur  est survenue lors de la récuprération des panniers
+cart_item.exception.delete: Une erreur  est survenue lors de la supression d'un article du pannier
+cart_item.exception.save: Une erreur  est survenue lors de l'enregistrement d'un article au pannier
+
+
+#cart itemp message
+cart_item.message.delete.danger: L'article existe dans un panier
+cart_item.message.no_stock.danger: Plus de stock pour cette article !
+cart_item.message.add.success: L'article a été ajouté au panier !
+cart_item.message.delete.success: L'article a été supprimé du panier !
+
+#order
+#order exception
+order.exception.query: Une erreur  est survenue lors de la récuprération des commandes.
+
+#order list
+order.list.column.created_at: Créer
+order.list.column.reference: Réfférence
+order.list.column.address: Adresse
+order.list.column.total: Total
+order.list.column.status: Status
+
+#order list name
+order.address.list.title: Liste des Commandes
+
+
+
+#user
+#user form
+user.form.email: Email
+user.form.password: Mots de passe
+user.form.confirm_password: Confirmez le mot de passe
+user.form.first_name: Prénom
+user.form.last_name: Nom
+user.form.phone: Télephone
+user.form.save: Valider
+
+#user lis title
+user.login.title: Se connectez
+user.list.title: Liste des produits
+
+#user form
+user.list.form.email: Email
+user.list.form.password: Mots de passe
+user.list.form.login: Se connectez
+
+user.list.personal: Informations personnelles
+user.list.delivery_address: Adresse de livraison
+user.list.connect: Connexion
+
+#voter
+voter.user.not_login: L'utilisateur n'est pas connecté
+vote.not_author: Le login de l'utilisateur %email% n'est pas l'auteur du post %id% .
+
+
+#navbar
+navbar.administration: Administration
+navbar.list_category: Liste des catégories
+navbar.create_category: Créer une catégorie
+navbar.list_product: Liste des produits
+navbar.create_product: Créer un produit
+navbar.my_account: Mon compte
+navbar.my_addresses: Mes adresses
+navbar.create_address: Ajouter une adresse
+navbar.my_cart: Mon panier
+navbar.my_orders: Mes commandes
+navbar.product: Produits
+navbar.logout: Se déconnecter
+navbar.login: Se connecter
+navbar.register: S'inscrire
+
+
+

@@ -6,6 +6,6 @@ use Exception;
 
 class CannotQueryCategoryException extends \Exception
 {
-    public static string $messageQuerry='Une erreur  est survenue lors de la récuprération de la categorie';
+    public static string $messageQuerry='category.exception.query';
 
 }

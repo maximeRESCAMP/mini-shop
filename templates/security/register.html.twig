@@ -1,23 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}{{ 'user.list.title'| trans }}{% endblock %}
 
 {% block body %}
     {% embed 'partials/_form.html.twig' with {
-        name: 'un compte',
+        title: 'user.list.title',
         is_update: false,
     } %}
         {% block form %}
-
-
             {{ form_start(form) }}
-
             <div class="my-custom-class-for-errors mb-3">
                 {{ form_errors(form) }}
             </div>
 
             <fieldset class="border rounded p-4 mb-4">
-                <legend class="w-auto px-2 fw-bold">Informations personnelles</legend>
+                <legend class="w-auto px-2 fw-bold">{{ 'user.list.personal' | trans }}</legend>
                 <div class="row g-3">
                     <div class="col-md-6">
                         {{ form_row(form.email) }}
@@ -40,13 +37,10 @@
                     <div class="col-md-6">
                         {{ form_row(form.lastName) }}
                     </div>
-
-
                 </div>
             </fieldset>
-
             <fieldset class="border rounded p-4 mb-4">
-                <legend class="w-auto px-2 fw-bold">Adresse de livraison</legend>
+                <legend class="w-auto px-2 fw-bold">{{ 'user.list.delivery_address' | trans }}</legend>
 
                 {% for deliveryAddresses in form.addresses %}
                     {{ form_row(deliveryAddresses) }}

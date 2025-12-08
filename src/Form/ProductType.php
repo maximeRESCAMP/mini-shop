@@ -13,14 +13,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProductType extends AbstractType
 {
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Nom du produit',
+                'label' => $this->translator->trans('product.form.product_name'),
                 'attr' => [
                     'placeholder' => 'processeur ryzen 7 5600x',
                     'class' => 'form-control',
@@ -28,7 +33,7 @@ class ProductType extends AbstractType
                 ]
             ])
             ->add('slug', TextType::class, [
-                'label' => 'Slug du produit',
+                'label' => $this->translator->trans('product.form.slug'),
                 'attr' => [
                     'placeholder' => 'processeur-ryzen-5600x',
                     'class' => 'form-control',
@@ -36,7 +41,7 @@ class ProductType extends AbstractType
                 ]
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => $this->translator->trans('product.form.description'),
                 'attr' => [
                     'placeholder' => 'processeur concu pour le gaming',
                     'class' => 'form-control',
@@ -44,7 +49,7 @@ class ProductType extends AbstractType
                 ]
             ])
             ->add('price', NumberType::class, [
-                'label' => 'Prix',
+                'label' => $this->translator->trans('product.form.price'),
                 'scale' => 2,
                 'attr' => [
                     'placeholder' => '10.50',
@@ -53,7 +58,7 @@ class ProductType extends AbstractType
                 ],
             ])
             ->add('stock', IntegerType::class, [
-                'label' => 'Stock',
+                'label' => $this->translator->trans('product.form.stock'),
                 'attr' => [
                     'placeholder' => '10',
                     'class' => 'form-control',
@@ -62,7 +67,7 @@ class ProductType extends AbstractType
                 ]
             ])
             ->add('picture', TextType::class, [
-                'label' => 'Image',
+                'label' => $this->translator->trans('product.form.picture'),
                 'required' => false,
             ])
             ->add('category', EntityType::class, [

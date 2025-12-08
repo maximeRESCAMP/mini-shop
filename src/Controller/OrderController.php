@@ -29,7 +29,7 @@ final class OrderController extends AbstractController
         $page = $request->query->getInt('page', 1);
         return $this->render('order/index.html.twig', [
             'orders' => $this->orderService->paginateOrder($user, $page),
-            "nom_col" => ["Date de Création","Réfférence","Adresse","Total","Statut"],
+            'nom_col' => $this->orderService->createColumn(),
             'val_filter' => ['o.createdAt', 'o.reference', 'a.city', 'o.total','o.status'],
         ]);
     }

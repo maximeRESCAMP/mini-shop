@@ -17,7 +17,7 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
-    public function paginateProduct(int $page, int $limit=10): PaginationInterface
+    public function paginateProduct(int $page, int $limit): PaginationInterface
     {
         return $this->paginator->paginate($this->createQueryBuilder('p')->innerJoin('p.category','c'),$page,$limit,[true,'sortFieldAllowList'=>['c.name', 'p.name', 'p.slug', 'p.description', 'p.price', 'p.stock']]);
     }

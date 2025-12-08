@@ -1,14 +1,17 @@
 {% extends 'base.html.twig' %}
 {% if is_update %}
-    {% set createOrUpdate = 'Modifier' %}
+    {% set createOrUpdate = 'form.update' %}
+    {% set title = 'product.form.title.update' %}
+
 {% else %}
-    {% set createOrUpdate = 'Créer' %}
+    {% set createOrUpdate = 'form.create' %}
+    {% set title = 'product.form.title.create' %}
 {% endif %}
-{% block title %}{{ createOrUpdate }} un produit{% endblock %}
+{% block title %}{{ title |trans }} {% endblock %}
 
 {% block body %}
     {% embed 'partials/_form.html.twig' with {
-        name: 'un produit',
+        title: title,
         createOrUpdate: createOrUpdate,
     } %}
         {% block form %}
@@ -42,7 +45,7 @@
                 </div>
             </div>
             <div>
-                <button class="btn btn-primary w-100"> {{ createOrUpdate }}</button>
+                <button class="btn btn-primary w-100"> {{ createOrUpdate | trans }}</button>
             </div>
             {{ form_end(form) }}
         {% endblock %}

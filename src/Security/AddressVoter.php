@@ -8,9 +8,15 @@ use App\Exception\CodeNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AddressVoter extends Voter
 {
+
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
+
     const EDIT = 'edit';
     const DELETE = 'delete';
 
@@ -32,14 +38,14 @@ class AddressVoter extends Voter
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
-            $vote?->addReason('L\'utilisateur n\'est pas connecté');
+            $vote?->addReason($this->translator->trans('voter.user.not_login'));
             return false;
         }
         $address = $subject;
         return match ($attribute) {
             self::EDIT => $this->canEdit($address, $user,$vote),
             self::DELETE => $this->canDelete($address, $user,$vote),
-            default => throw new CodeNotFoundException(CodeNotFoundException::$codeNotFound)
+            default => throw new CodeNotFoundException($this->translator->trans(CodeNotFoundException::$codeNotFound))
         };
     }
 
@@ -48,9 +54,8 @@ class AddressVoter extends Voter
         if ($user === $address->getUser()) {
             return true;
         }
-        $vote->addReason(sprintf(
-        'Le login de l\'utilisateur (email: %s) n\'est pas l\'auteur du poste (id: %d).',$user->getEmail(),$address->getId()
-        ));
+        $vote->addReason($this->translator->trans('vote.not_author',['%email%'=>$user->getEmail(),'%id%'=>$address->getId()]));
+
         return false;
     }
     private function canDelete(Address $address, User $user, ?Vote $vote): bool{

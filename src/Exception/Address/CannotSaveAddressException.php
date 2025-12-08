@@ -6,5 +6,5 @@ use Exception;
 
 class CannotSaveAddressException extends Exception
 {
-    public static string $cannotMessage = 'Erreur lors de la sauvegarde de l\'adresse';
+    public static string $cannotMessage = 'delivery.address.exception.save';
 }

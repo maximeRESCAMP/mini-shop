@@ -1,6 +1,8 @@
 <?php
 namespace App\Enum;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 enum OrderStatus :string
 {
     case Pending = 'pending';

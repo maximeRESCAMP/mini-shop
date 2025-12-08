@@ -19,9 +19,9 @@ class CartItemRepository extends ServiceEntityRepository
         parent::__construct($registry, CartItem::class);
     }
 
-    public function paginateCartItem(User $user, int $page, int $limit = 10): PaginationInterface
+    public function paginateCartItem(User $user, int $page, int $limit ): PaginationInterface
     {
-        return $this->paginator->paginate($this->createQueryBuilder('ci')->innerJoin('ci.product','p'), $page, $limit, [true, 'sortFieldAllowList' => ['p.name', 'p.price', 'ci.quantity']]);
+        return $this->paginator->paginate($this->createQueryBuilder('ci')->innerJoin('ci.product','p')->andWhere('ci.user = :user')->setParameter('user',$user), $page, $limit, [true, 'sortFieldAllowList' => ['p.name', 'p.price', 'ci.quantity']]);
     }
 
     /**

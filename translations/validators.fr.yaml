@@ -1,0 +1,24 @@
+error.regex.address.zip_code: Le champ  ne doit contenir que des chiffres
+error.regex.address.city: Le champ  ne doits contenir que des lettres ou espaces - ou bien
+error.regex.address.street: Le champ  ne doit contenir que des lettre chiffre ou espace tirer virgule ou bien guillemet
+error.regex.category.name: Le nom de la catégorie doit contenir uniquement des lettres, espaces, tirets ou apostrophes (3 à 50 caractères).
+error.regex.slug: Le slug ne doit contenir que des lettres minuscules, chiffres et tirets.
+error.regex.user.first_name: Le prénom  ne doit contenir que des lettres, espaces, tirets, apostrophe
+error.regex.user.last_name: Le champ  ne doit contenir que des lettres, espaces, tirets, apostrophe
+
+error.not_blank: Ce champ ne peut pas être vide
+error.min_length: La longueur minimale est de {{ limit }} caractères.
+error.max_length: La longueur maximale est {{ limit }}
+error.positive: La valeur doit être supérieur à 0
+error.positive_or_zero: La valeur doit être supérieur ou égal à 0
+error.not_null: LA velur ne peux pasêtre null
+error.type.integer: La quantité doit être un nombre entier
+error.type.float: La quantité doit être un nombre décimal
+error.less.than.or.equal: La quantité ne peut pas dépasser {{ compared_value }}
+error.product.already_exist: Ce produit est déjà dans votre panier
+error.order.reference: La référence ne doit contenir que des lettres, chiffres ou tirets (sans espace)
+error.name.already_exist: name déja existant
+error.slug.already_exist: slug déja existant
+error.email: L'email {{ value }} n\'est pas valide
+error.password.compromise: Mot de passe compromis
+error.tel.invalid: Format de numéro invalide

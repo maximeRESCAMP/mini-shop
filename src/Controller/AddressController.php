@@ -15,16 +15,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 #[Route('/address', name: 'app_address_')]
 final class AddressController extends AbstractController
 {
-    public function __construct(private readonly AddressService $addressService)
+    public function __construct(private readonly AddressService $addressService, private readonly TranslatorInterface $translator)
     {
     }
 
     /**
+     * @throws CannotQueryAddressException
      */
     #[Route('', name: 'list', methods: ['GET'])]
     public function index(#[CurrentUser] User $user, Request $request): Response
@@ -32,7 +34,7 @@ final class AddressController extends AbstractController
         $page = $request->query->getInt('page', 1);
         return $this->render('address/index.html.twig', [
             'addresses' => $this->addressService->paginateAddressByUser($user,$page),
-            'nom_col' => ['Pays', 'Code Postal', 'Ville', 'Rue', 'Action'],
+            'nom_col' => $this->addressService->createColumn(),
             'val_filter' => ['a.country', 'a.zipCode', 'a.city', 'a.street'],
         ]);
     }
@@ -53,7 +55,7 @@ final class AddressController extends AbstractController
             $this->addressService->assignUser($address, $user);
             $this->addFlash(
                 'success',
-                'Ajout de l\'adreese réussi!'
+                $this->translator->trans('delivery.address.message.add.success')
             );
             return $this->redirectToRoute('app_address_list');
         }
@@ -71,7 +73,9 @@ final class AddressController extends AbstractController
     #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Address $address, #[CurrentUser] ?User $user, Request $request): Response
     {
+
         $this->denyAccessUnlessGranted(AddressVoter::EDIT, $address);
+
         $form = $this->createForm(AddressType::class, $address);
         $form->handleRequest($request);
 
@@ -81,7 +85,7 @@ final class AddressController extends AbstractController
             $this->addressService->save($address);
             $this->addFlash(
                 'success',
-                'Modification de l\'adresse réussi!'
+                $this->translator->trans('delivery.address.message.update.success')
             );
             return $this->redirectToRoute('app_address_list');
         }
@@ -102,9 +106,8 @@ final class AddressController extends AbstractController
         $this->addressService->dissociateAddressFromUser($address,$user);
         $this->addFlash(
             'success',
-            'Supression de l\'adresse réussi!'
+            $this->translator->trans('delivery.address.message.delete.success')
         );
-
         return $this->redirectToRoute('app_address_list');
     }
 

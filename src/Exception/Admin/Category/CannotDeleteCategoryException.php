@@ -6,6 +6,6 @@ use Exception;
 
 class CannotDeleteCategoryException extends \Exception
 {
-    public static string $messageRemove='Une erreur  est survenue lors de la supression de la categorie';
+    public static string $messageRemove='category.exception.delete';
 
 }

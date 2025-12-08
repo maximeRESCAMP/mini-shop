@@ -1,48 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des produits{% endblock %}
+{% block title %}{{ 'product.list.title'| trans }}{% endblock %}
 
 {% block body %}
     {% embed 'partials/_list.html.twig' with {
-        titre: 'des produits',
+        titre: 'product.list.title',
         route_add: false,
         nom_col: nom_col,
         'datas':products
 
     } %}
         {% block tableauDonnee %}
-                    {% for product in products %}
-                        <tr>
+            {% for product in products %}
+                <tr>
 
-                            <td><img src="{{ product.picture}}" alt="imagge_product_{{ product.name }}" width="100px" height="100px" ></td>
+                    <td><img src="{{ product.picture }}" alt="imagge_product_{{ product.name }}" width="100px"
+                             height="100px"></td>
 
-                            <td>{{ product.category.name }}</td>
-                            <td>
-                                <a href="{{ path('app_product_detail', {slug: product.slug}) }}"
-                                   class="text-decoration-none fw-bold">
-                                    {{ product.name }}
-                                </a>
-                            </td>
-                            <td>{{ product.price | round(2, 'common') }}€</td>
-                            <td>
-                                {% if product.stock < 1 %}
-                                    <button class="btn btn-secondary" disabled>Plus de stock</button>
-                                {% endif %}
-                                {% if (product.id in itemsCartOrder) %}
-                                    <a href="{{ path('app_cart_item_delete_by_product',{id: product.id}) }}"
-                                       class="btn btn-danger mb-3"> <i class="bi bi-trash text-dark"></i></a>
-                                {% else %}
-                                    {% if product.stock > 0 %}
-                                        <a href="{{ path('app_cart_item_add',{id: product.id}) }}"
-                                           class="btn btn-primary mb-3"><i class="bi bi-plus-circle-fill text-dark"></i></a>
-                                    {% endif %}
+                    <td>{{ product.category.name }}</td>
+                    <td>
+                        <a href="{{ path('app_product_detail', {slug: product.slug}) }}"
+                           class="text-decoration-none fw-bold">
+                            {{ product.name }}
+                        </a>
+                    </td>
+                    <td>{{ product.price | round(2, 'common') }}€</td>
+                    <td>
+                        {% if product.stock < 1 %}
+                            <button class="btn btn-secondary" disabled>{{ 'product.list.not_in_stock'|trans }}</button>
+                        {% endif %}
+                        {% if (product.id in itemsCartOrder) %}
+                            <a href="{{ path('app_cart_item_delete_by_product',{id: product.id}) }}"
+                               class="btn btn-danger mb-3"> <i class="bi bi-trash text-dark"></i></a>
+                        {% else %}
+                            {% if product.stock > 0 %}
+                                <a href="{{ path('app_cart_item_add',{id: product.id}) }}"
+                                   class="btn btn-primary mb-3"><i class="bi bi-plus-circle-fill text-dark"></i></a>
+                            {% endif %}
 
-                                {% endif %}
+                        {% endif %}
 
 
-                            </td>
-                        </tr>
-                    {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
         {% endblock %}
     {% endembed %}
 {% endblock %}

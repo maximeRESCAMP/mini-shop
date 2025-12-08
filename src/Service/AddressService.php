@@ -5,36 +5,42 @@ namespace App\Service;
 use App\Entity\Address;
 use App\Entity\User;
 use App\Exception\Address\AddressAlreadyExistsException;
-use App\Exception\Address\AddressUserNotFoundException;
 use App\Exception\Address\CannotQueryAddressException;
 use App\Exception\Address\CannotSaveAddressException;
 use App\Repository\AddressRepository;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class AddressService
 {
-    public function __construct(private EntityManagerInterface $em, private AddressRepository $addressRepository, private OrderRepository $orderRepository)
+    public function __construct(
+        private EntityManagerInterface $em,
+        private AddressRepository $addressRepository,
+        private OrderRepository $orderRepository,
+        private TranslatorInterface $translatorInterface
+    )
     {
     }
 
     /**
-     * @throws AddressUserNotFoundException
+     * @throws CannotQueryAddressException
      */
-    public function findByUser(?User $user): array
+    public function paginateAddressByUser(User $user, int $page = 1, int $limit = 10): PaginationInterface
     {
         try {
-            return $this->addressRepository->findBy(['user' => $user]);
+            return $this->addressRepository->paginateAddressByUser($user, $page, $limit);
         } catch (\Throwable $th) {
-            throw new AddressUserNotFoundException(AddressUserNotFoundException::$userNotFound);
+            throw new CannotQueryAddressException($this->translatorInterface->trans(CannotQueryAddressException::$queryMessage));
         }
     }
 
-    public function paginateAddressByUser(User $user, int $page = 1, int $limit = 10): PaginationInterface
-    {
-        return $this->addressRepository->paginateAddressByUser($user, $page, $limit);
+    public function createColumn():array{
+        $tabColumn =['country', 'zip_code', 'city', 'street', 'action'];
+       return array_map(fn($column)=>$this->translatorInterface->trans('delivery.address.list.column.'.$column),$tabColumn);
     }
+
 
     /**
      * @throws AddressAlreadyExistsException|CannotQueryAddressException
@@ -50,10 +56,10 @@ readonly class AddressService
                 'user' => $user,
             ]);
         } catch (\Throwable $th) {
-            throw new CannotQueryAddressException(CannotQueryAddressException::$cannotMessage);
+            throw new CannotQueryAddressException($this->translatorInterface->trans(CannotQueryAddressException::$queryMessage));
         }
         if ($exists && $exists->getId() !== $address->getId()) {
-            throw new AddressAlreadyExistsException(AddressAlreadyExistsException::$addressAlready);
+            throw new AddressAlreadyExistsException($this->translatorInterface->trans(AddressAlreadyExistsException::$addressAlready));
         }
         return true;
     }
@@ -67,7 +73,7 @@ readonly class AddressService
             $this->em->persist($address);
             $this->em->flush();
         } catch (\Throwable $th) {
-            throw new CannotSaveAddressException(CannotSaveAddressException::$cannotMessage);
+            throw new CannotSaveAddressException($this->translatorInterface->trans(CannotSaveAddressException::$cannotMessage));
         }
 
     }
@@ -84,7 +90,6 @@ readonly class AddressService
         } else {
             $address->setUser(null);
             $this->save($address);
-
         }
 
 

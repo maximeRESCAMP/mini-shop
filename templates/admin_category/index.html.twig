@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Catégories{% endblock %}
+{% block title %}{{ 'category.list.title' | trans}}{% endblock %}
 
 {% block body %}
     {% embed 'partials/_list.html.twig' with {
-        titre: 'des catégories',
+        titre: 'category.list.title',
         route_add: 'app_admin_category_add',
         nom_col: nom_col,
         'datas':categories

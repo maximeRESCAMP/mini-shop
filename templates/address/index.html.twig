@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste de mes adresses de Livraison{% endblock %}
+{% block title %}{{ 'delivery.address.list.title'| trans }}{% endblock %}
 
 {% block body %}
     {% embed 'partials/_list.html.twig' with {
-        titre: 'des adresses de Livraison',
+        titre: 'delivery.address.list.title',
         route_add: 'app_address_add',
         nom_col: nom_col,
         val_filter: val_filter,
@@ -13,7 +13,7 @@
         {% block tableauDonnee %}
             {% for deliveryAddres in addresses %}
                 <tr>
-                    <td>{{ deliveryAddres.country }}</td>
+                    <td>{{ deliveryAddres.country|country_name(app.request.locale) }}</td>
                     <td>{{ deliveryAddres.zipCode }}</td>
                     <td>{{ deliveryAddres.city }}</td>
                     <td>{{ deliveryAddres.street }}</td>

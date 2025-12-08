@@ -15,11 +15,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(
     fields: ['slug'],
-    message: 'slug déja existant'
+    message: 'error.slug.already_exist'
 )]
 #[UniqueEntity(
     fields: ['name'],
-    message: 'name déja existant'
+    message: 'error.name.already_exist'
 )]
 class Product
 {
@@ -31,49 +31,49 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 50, unique: true)]
-    #[Assert\NotBlank(message: 'Le nom ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank ')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
     private ?string $name = null;
 
     #[ORM\Column(length: 50, unique: true)]
-    #[Assert\NotBlank(message: 'Le nom ne peut pa être vide')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Length(
         min: 3,
         max: 50,
-        minMessage: 'La rue doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La rue ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
     #[Assert\Regex(
         pattern: '/^[a-z0-9\-]{3,50}$/',
-        message: 'Le slug ne doit contenir que des lettres minuscules, chiffres et tirets.'
+        message: 'error.regex.slug'
     )]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: false)]
-    #[Assert\NotBlank(message: 'La description est obligatoire')]
+    #[Assert\NotBlank(message: 'error.not_blank')]
     #[Assert\Length(
         min: 10,
         max: 1000,
-        minMessage: 'La description doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères'
+        minMessage: 'error.min_length',
+        maxMessage: 'error.max_length'
     )]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Assert\Positive(message: 'Le prix doit être supérieur à 0')]
-    #[Assert\NotNull(message: 'Le prix est obligatoire')]
-    #[Assert\Type(type: 'float', message: 'Le prix doit être un nombre décimal')]
+    #[Assert\Positive(message: 'error.positive')]
+    #[Assert\NotNull(message: 'error.not_null')]
+    #[Assert\Type(type: 'float', message: 'error.type.float')]
     private ?float $price = null;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: 'Le stock est obligatoire')]
-    #[Assert\PositiveOrZero(message: 'Le stock ne peut pas être négatif')]
-    #[Assert\LessThanOrEqual(100000, message: 'le stock ne peux pas dépasser {{ limit }}')]
+    #[Assert\NotNull(message: 'error.not_null')]
+    #[Assert\PositiveOrZero(message: 'error.positive_or_zero')]
+    #[Assert\LessThanOrEqual(100000, message: 'error.less.than.or.equal')]
     private ?int $stock = null;
 
     #[ORM\Column(length: 100, nullable: true)]

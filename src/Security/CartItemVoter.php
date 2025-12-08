@@ -10,11 +10,16 @@ use App\Exception\CodeNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CartItemVoter extends Voter
 {
     const EDIT = 'edit';
     const DELETE = 'delete';
+
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -34,7 +39,7 @@ class CartItemVoter extends Voter
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
-            $vote?->addReason('L\'utilisateur n\'est pas connecté');
+            $vote?->addReason($this->translator->trans('voter.user.not_login'));
             return false;
         }
         $cartItem = $subject;
@@ -50,9 +55,8 @@ class CartItemVoter extends Voter
         if ($user === $cartItem->getUser()) {
             return true;
         }
-        $vote->addReason(sprintf(
-        'Le login de l\'utilisateur (email: %s) n\'est pas l\'auteur du poste (id: %d).',$user->getEmail(),$cartItem->getId()
-        ));
+        $vote->addReason($this->translator->trans('vote.not_author',['%email%'=>$user->getEmail(),'%id%'=>$cartItem->getId()]));
+
         return false;
     }
     private function canDelete(CartItem $cartItem, User $user, ?Vote $vote): bool{
