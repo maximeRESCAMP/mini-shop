@@ -14,7 +14,7 @@
 
             {% for cartItem in cartItems %}
                 <tr>
-                    <td><img src="{{ cartItem.product.picture }}" alt={{ cartItem.product.name }} width="100px"
+                    <td><img src="{{ asset('pictures/' ~ cartItem.product.getSlug()~'.jpg') }}" alt={{ cartItem.product.name }} width="100px"
                              height="100px">
                     </td>
                     <td>{{ cartItem.product.name }}</td>

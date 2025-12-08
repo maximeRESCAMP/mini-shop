@@ -22,7 +22,8 @@
                     {% for orderItem in ordersItems %}
                         <tr>
                             <td>
-                                <img src="{{ orderItem.product.picture }}" alt="imagge_product_{{ orderItem.product.name }}" width="100px" height="100px">
+
+                                <img src="{{ asset('pictures/' ~orderItem.product.picture) }}" alt="imagge_product_{{ orderItem.product.name }}" width="100px" height="100px">
                             </td>
 
                             <td>{{ orderItem.product.name }}</td>

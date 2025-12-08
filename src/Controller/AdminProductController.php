@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Exception\Admin\Product\CannotDeleteProductException;
 use App\Exception\Admin\Product\CannotSaveProductException;
 use App\Exception\CartItem\CannotQueryCartItemException;
+use App\Exception\NotGoodExtension;
 use App\Exception\Product\CannotQueryProductException;
 use App\Form\ProductType;
 use App\Service\AdminProductService;
@@ -35,7 +36,7 @@ class AdminProductController extends AbstractController
         return $this->render('admin_product/index.html.twig', [
             'products' => $this->productService->paginateProduct($page),
             'nom_col' => $this->productService->createColumn(),
-            'val_filter' => [null,'c.name', 'p.name', 'p.slug', 'p.description', 'p.price', 'p.stock',null],
+            'val_filter' => [null, 'c.name', 'p.name', 'p.slug', 'p.description', 'p.price', 'p.stock', null],
 
         ]);
     }
@@ -43,6 +44,7 @@ class AdminProductController extends AbstractController
 
     /**
      * @throws CannotSaveProductException
+     * @throws NotGoodExtension
      */
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
     public function add(Request $request): Response
@@ -51,6 +53,11 @@ class AdminProductController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->getData();
+            $file = $form['picture']->getData();
+            if (isset($file)){
+                $this->adminProductService->downloadPicture($product, $file);
+            }
+
             $this->adminProductService->save($product);
             $this->addFlash(
                 'success',
@@ -91,6 +98,7 @@ class AdminProductController extends AbstractController
 
     /**
      * @throws CannotSaveProductException
+     * @throws NotGoodExtension
      */
     #[Route('update/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function update(Product $product, Request $request): Response
@@ -100,6 +108,10 @@ class AdminProductController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->getData();
+            $file = $form['picture']->getData();
+            if (isset($file)){
+                $this->adminProductService->downloadPicture($product, $file);
+            }
             $this->adminProductService->save($product);
             $this->addFlash(
                 'success',

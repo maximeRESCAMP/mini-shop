@@ -213,4 +213,7 @@ navbar.login: Se connecter
 navbar.register: S'inscrire
 
 
+#exception
+exception.extension.not_good: Ceci n'est pas une bonne extension d'image
+
 

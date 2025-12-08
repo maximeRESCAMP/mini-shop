@@ -14,8 +14,10 @@
 
             {% for product in products %}
                 <tr>
-                    <td><img src="{{ product.picture }}" alt="imagge_product_{{ product.name }}" width="100px"
-                             height="100px"></td>
+
+                    <td><img src="{{ asset('pictures/' ~ product.getPicture()) }}" alt={{ product.name }} width="100px"
+                             height="100px">
+                    </td>
                     <td>{{ product.category.name }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.slug }}</td>
