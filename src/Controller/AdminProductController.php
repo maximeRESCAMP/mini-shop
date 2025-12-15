@@ -21,7 +21,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route('/admin/product', name: 'app_admin_product_')]
 class AdminProductController extends AbstractController
 {
-    public function __construct(private readonly AdminProductService $adminProductService, private readonly ProductService $productService, private readonly CartItemService $cartItemService, private readonly TranslatorInterface $translator)
+    public function __construct(
+        private readonly AdminProductService $adminProductService,
+        private readonly ProductService      $productService,
+        private readonly CartItemService     $cartItemService,
+        private readonly TranslatorInterface $translator
+    )
     {
     }
 
@@ -54,7 +59,7 @@ class AdminProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->getData();
             $file = $form['picture']->getData();
-            if (isset($file)){
+            if (isset($file)) {
                 $this->adminProductService->downloadPicture($product, $file);
             }
 
@@ -109,7 +114,7 @@ class AdminProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $form->getData();
             $file = $form['picture']->getData();
-            if (isset($file)){
+            if (isset($file)) {
                 $this->adminProductService->downloadPicture($product, $file);
             }
             $this->adminProductService->save($product);

@@ -15,24 +15,30 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class CartItemService
 {
-    public function __construct(private EntityManagerInterface $em, private CartItemRepository $cartItemRepository, private readonly TranslatorInterface $translator)
+    public function __construct(
+        private EntityManagerInterface $em,
+        private CartItemRepository $cartItemRepository,
+        private readonly TranslatorInterface $translator
+    )
     {
     }
 
     /**
      * @throws CannotQueryCartItemException
      */
-    public function paginateProduct(User $user,$page, $limit=5): PaginationInterface
+    public function paginateProduct(User $user, $page, $limit = 5): PaginationInterface
     {
         try {
-            return $this->cartItemRepository->paginateCartItem($user,$page,$limit);
+            return $this->cartItemRepository->paginateCartItem($user, $page, $limit);
         } catch (\Throwable $exception) {
             throw new CannotQueryCartItemException($this->translator->trans(CannotQueryCartItemException::$messageQuerry));
         }
     }
-    public function createColumn():array{
-        $tabColumn =['picture','name','unit_price','quantity','action'];
-        return array_map(fn($column)=>$this->translator->trans('cart_item.list.column.'.$column),$tabColumn);
+
+    public function createColumn(): array
+    {
+        $tabColumn = ['picture', 'name', 'unit_price', 'quantity', 'action'];
+        return array_map(fn($column) => $this->translator->trans('cart_item.list.column.' . $column), $tabColumn);
     }
 
     /**
@@ -115,7 +121,7 @@ readonly class CartItemService
     {
         try {
             return $this->cartItemRepository->findBy(['product' => $product]);
-        }catch (\Throwable $exception) {
+        } catch (\Throwable $exception) {
             throw new CannotQueryCartItemException($this->translator->trans(CannotQueryCartItemException::$messageQuerry));
         }
 

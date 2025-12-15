@@ -7,28 +7,17 @@ use App\Entity\User;
 use App\Exception\Order\CannotQueryOrderException;
 use App\Repository\OrderItemRepository;
 use App\Repository\OrderRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class OrderService
 {
-    public function __construct(private OrderRepository $orderRepository, private OrderItemRepository $orderItemRepository, private readonly TranslatorInterface $translator)
+    public function __construct(
+        private OrderRepository $orderRepository,
+        private OrderItemRepository $orderItemRepository,
+        private readonly TranslatorInterface $translator
+    )
     {
-    }
-
-    /**
-     * @throws CannotQueryOrderException
-     */
-    public function findOrderByUser(User $user): array
-    {
-        try {
-            return $this->orderRepository->findBy(['user' => $user]);
-
-        } catch (\Throwable $exception) {
-            throw new CannotQueryOrderException($this->translator->trans(CannotQueryOrderException::$messageQuerry));
-        }
     }
 
     /**

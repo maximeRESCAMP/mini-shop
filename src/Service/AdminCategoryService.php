@@ -20,7 +20,8 @@ readonly class AdminCategoryService
     /**
      * @throws CannotQueryCategoryException
      */
-    public function paginateCategory(int $page):PaginationInterface{
+    public function paginateCategory(int $page): PaginationInterface
+    {
         try {
             return $this->categoryRepository->paginateCategory($page);
         } catch (\Throwable $exception) {
@@ -28,9 +29,10 @@ readonly class AdminCategoryService
         }
     }
 
-    public function createColumn():array{
-        $tabColumn = ['name','slug','action'];
-        return array_map(fn($column)=>$this->translator->trans('category.list.column.'.$column),$tabColumn);
+    public function createColumn(): array
+    {
+        $tabColumn = ['name', 'slug', 'action'];
+        return array_map(fn($column) => $this->translator->trans('category.list.column.' . $column), $tabColumn);
     }
 
 
@@ -53,7 +55,7 @@ readonly class AdminCategoryService
     public function findOneByCategory(string $slug): Category
     {
         try {
-            return $this->categoryRepository->findOneBy(['slug'=>$slug]);
+            return $this->categoryRepository->findOneBy(['slug' => $slug]);
         } catch (\Throwable $exception) {
             throw new CannotQueryCategoryException($this->translator->trans(CannotQueryCategoryException::$messageQuerry));
         }

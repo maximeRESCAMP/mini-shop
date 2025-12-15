@@ -12,7 +12,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class ProductService
 {
-    public function __construct(private ProductRepository $productRepository,private TranslatorInterface $translator)
+    public function __construct(
+        private ProductRepository $productRepository,
+        private TranslatorInterface $translator)
     {
     }
 
