@@ -1,1 +1,114 @@
 
+#list
+#list generic
+list.add: Add
+
+#form
+#form generic
+form.create: Create
+form.update: Edit
+
+general.exception.not_found: The code could not be found
+general.form.validate: Validate
+
+#delivery.address.exception
+delivery.address.exception.query: An error occurred while retrieving addresses
+delivery.address.exception.already_exist: Address already exists
+delivery.address.exception.save: Error while saving the address
+
+#delivery address list column
+delivery.address.list.column.country: Country
+delivery.address.list.column.zip_code: Zip Code
+delivery.address.list.column.city: City
+delivery.address.list.column.street: Street
+delivery.address.list.column.action: Action
+
+#delivery address
+delivery.address.list.title: My delivery addresses list
+
+#delivery address form
+delivery.address.form.country: Country
+delivery.address.form.zip_code: Zip Code
+delivery.address.form.city: City
+delivery.address.form.street: Street
+
+#form delivery address title
+delivery.address.form.title.create: 'Create a delivery address'
+delivery.address.form.title.update: 'Edit a delivery address'
+
+#delivery address message
+delivery.address.message.add.success: Address successfully added
+delivery.address.message.update.success: Address successfully updated
+delivery.address.message.delete.success: Address successfully deleted!
+
+#category
+#category exception
+category.exception.query: An error occurred while retrieving the category
+category.exception.save: An error occurred while saving the category
+category.exception.delete: An error occurred while deleting the category
+
+#category list
+category.list.title: Category list
+
+#category list column
+category.list.column.name: Name
+category.list.column.slug: Slug
+category.list.column.action: Action
+
+#category form name
+category.form.name: Name
+category.form.slug: Slug
+
+#form category title
+category.form.title.create: Create a category
+category.form.title.update: Edit a category
+
+#category message
+category.message.add.success: Category successfully added!
+category.message.delete.success: Category deleted!
+category.message.update.success: Category successfully updated!
+
+#product
+#product exception
+product.exception.query: An error occurred while retrieving products
+product.exception.save: An error occurred while deleting the product
+
+#product error
+product.error.product_associate_category: Products are associated with this category, please delete the products first!
+product.error.save: An error occurred while saving the product
+
+#product detail
+product.list.detail: Product details
+product.list.category: Category
+product.list.price: Price
+product.list.description: Description
+product.list.delete_item_cart: Remove from cart
+product.list.not_stock: Out of stock
+
+#product list
+product.list.title: Product list
+
+#product list column
+product.list.column.picture: Image
+product.list.column.category_name: Category name
+product.list.column.product_name: Product name
+product.list.column.slug: Slug
+product.list.column.description: Description
+product.list.column.price: Price
+product.list.column.stock: Stock
+product.list.column.action: Action
+
+#product list
+product.list.not_in_stock: Out of stock
+
+#product form
+product.form.product_name: Product name
+product.form.slug: Slug
+product.form.description: Description
+product.form.price: Price
+product.form.stock: Stock
+product.form.picture: Image
+product.form.category: Category name
+
+#product form error
+product.form.error.not_all_product: Not enou

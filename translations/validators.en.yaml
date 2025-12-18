@@ -1,0 +1,24 @@
+error.regex.address.zip_code: The field must contain only numbers
+error.regex.address.city: The field must contain only letters, spaces, or hyphens
+error.regex.address.street: The field must contain only letters, numbers, spaces, hyphens, commas, or quotes
+error.regex.category.name: The category name must contain only letters, spaces, hyphens, or apostrophes (3 to 50 characters).
+error.regex.slug: The slug must contain only lowercase letters, numbers, and hyphens.
+error.regex.user.first_name: The first name must contain only letters, spaces, hyphens, or apostrophes
+error.regex.user.last_name: The field must contain only letters, spaces, hyphens, or apostrophes
+
+error.not_blank: This field cannot be empty
+error.min_length: The minimum length is {{ limit }} characters.
+error.max_length: The maximum length is {{ limit }}
+error.positive: The value must be greater than 0
+error.positive_or_zero: The value must be greater than or equal to 0
+error.not_null: The value cannot be null
+error.type.integer: The quantity must be an integer
+error.type.float: The quantity must be a decimal number
+error.less.than.or.equal: The quantity cannot exceed {{ compared_value }}
+error.product.already_exist: This product is already in your cart
+error.order.reference: The reference must contain only letters, numbers, or hyphens (no spaces)
+error.name.already_exist: Name already exists
+error.slug.already_exist: Slug already exists
+error.email: The email {{ value }} is not valid
+error.password.compromise: Compromised password
+error.tel.invalid: Invalid phone number format
