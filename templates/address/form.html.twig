@@ -1,46 +1,53 @@
 {% extends 'base.html.twig' %}
 {% if is_update %}
-    {% set createOrUpdate = 'form.update' %}
-    {% set title = 'delivery.address.form.title.update' %}
+	{% set createOrUpdate = 'form.update' %}
+	{% set title = 'delivery.address.form.title.update' %}
 
 {% else %}
-    {% set createOrUpdate = 'form.create' %}
-    {% set title = 'delivery.address.form.title.create' %}
+	{% set createOrUpdate = 'form.create' %}
+	{% set title = 'delivery.address.form.title.create' %}
 
 
 {% endif %}
-{% block title %} {{ title | trans}}{% endblock %}
+{% block title %}
+	{{ title | trans}}
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	 <script src="{{ asset('js/address.js') }}" defer></script>
+{% endblock %}
 
 {% block body %}
-    {% embed 'partials/_form.html.twig' with {
+{% embed 'partials/_form.html.twig' with {
         title: title,
         createUpdate: createOrUpdate,
     } %}
 
-        {% block form %}
-            {{ form_start(form) }}
-            <div class="my-custom-class-for-errors mb-3">
-                {{ form_errors(form) }}
-            </div>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    {{ form_row(form.country) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.zipCode) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.city) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.street) }}
-                </div>
-                <div>
-                    <button class="btn btn-primary w-100"> {{ createOrUpdate |trans }}</button>
-                </div>
-            </div>
-            {{ form_end(form) }}
-
-        {% endblock %}
-    {% endembed %}
-{% endblock %}
+	{% block form %}
+	{{ form_start(form) }}
+	<div class="my-custom-class-for-errors mb-3" id="error-form-zip">
+		{{ form_errors(form) }}
+	</div>
+	<div class="row g-3">
+		<div class="col-md-6">
+			{{ form_row(form.country) }}
+		</div>
+		<div class="col-md-6">
+			{{ form_row(form.zipCode) }}
+		</div>
+		<div class="col-md-6">
+			{{ form_row(form.city) }}
+			<datalist id="cities">
+			</datalist>
+		</div>
+		<div class="col-md-6">
+			{{ form_row(form.street) }}
+			<datalist id="adresses">
+			</datalist>
+		</div>
+		<div>
+			<button class="btn btn-primary w-100">
+				{{ createOrUpdate |trans }}
+			</button>
+		</div>
+		<da </div> {{ form_end(form) }} {% endblock %} {% endembed %} {% endblock %}

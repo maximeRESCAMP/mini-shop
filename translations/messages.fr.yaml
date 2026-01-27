@@ -28,6 +28,8 @@ delivery.address.list.title: Liste de mes adresses de Livraison
 #delivery address form
 delivery.address.form.country: Pays
 delivery.address.form.zip_code: Code Postal
+delivery.address.form.choose-city: 'Choisissez une Ville'
+delivery.address.form.choose-street: 'Choisissez une rue'
 delivery.address.form.city: Ville
 delivery.address.form.street: Rue
 

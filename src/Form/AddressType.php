@@ -29,12 +29,12 @@ class AddressType extends AbstractType
                     'choices' => $countries,
                     'label' => $this->translator->trans('delivery.address.form.country'), 'attr' => [
                         'class' => 'form-control',
-                    ]
+                    ],
                 ]
             )
-            ->add('zipCode', TextType::class, ['label' => $this->translator->trans('delivery.address.form.zip_code'), 'attr' => ['placeholder' => '44000', 'class' => 'form-control', 'autocomplete' => 'postal-code', 'inputmode' => 'numeric']])
-            ->add('city', TextType::class, ['label' => $this->translator->trans('delivery.address.form.city'), 'attr' => ['placeholder' => 'Nantes', 'class' => 'form-control', 'autocomplete' => 'address-level2', 'inputmode' => 'text']])
-            ->add('street', TextType::class, ['label' => $this->translator->trans('delivery.address.form.street'), 'attr' => ['placeholder' => '16 rue des dockers', 'autocomplete' => 'street-address', 'inputmode' => 'text']]);
+            ->add('zipCode', TextType::class, ['label' => $this->translator->trans('delivery.address.form.zip_code'), 'attr' => ['placeholder' => '44000', 'class' => 'form-control', 'autocomplete' => 'postal-code', 'inputmode' => 'numeric','disabled'=>'']])
+            ->add('city', TextType::class, ['label' => $this->translator->trans('delivery.address.form.city'), 'attr' => ['list' => 'cities','class' => 'form-control','disabled'=>'','autocomplete'=>'off']])
+            ->add('street', TextType::class, ['label' => $this->translator->trans('delivery.address.form.street'), 'attr' => ['list' => 'adresses','placeholder' => '16 rue des dockers', 'autocomplete' => 'off', 'inputmode' => 'text','disabled'=>'']]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
